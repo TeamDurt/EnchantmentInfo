@@ -6,7 +6,7 @@ plugins {
 minecraft {
     version(minecraft_version)
     def aw = file("src/main/resources/${mod_id}.accesswidener")
-    if(aw.exists()){
+    if (aw.exists()) {
         accessWideners(aw)
     }
 }
@@ -30,4 +30,3 @@ artifacts {
     commonJava sourceSets.main.java.sourceDirectories.singleFile
     commonResources sourceSets.main.resources.sourceDirectories.singleFile
 }
-
