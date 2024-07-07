@@ -36,7 +36,7 @@ public class ItemEnchantmentCompatibilityManager {
                 .toList();
     }
 
-    public void scanAndPopulateCompatibilities() {
+    public void populateCompatibilities() {
         for (Item item : BuiltInRegistries.ITEM.stream().toList()) {
             for (Enchantment enchantment : BuiltInRegistries.ENCHANTMENT.stream().toList()) {
                 addCompatibility(item, enchantment, enchantment.canEnchant(new ItemStack(item)));
