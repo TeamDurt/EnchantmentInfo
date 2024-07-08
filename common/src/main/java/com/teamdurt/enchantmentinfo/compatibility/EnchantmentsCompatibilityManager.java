@@ -20,7 +20,7 @@ public class EnchantmentsCompatibilityManager {
         return instance;
     }
 
-    private void addCompatibility(Enchantment enchantment1, Enchantment enchantment2, boolean compatible) {
+    public void addCompatibility(Enchantment enchantment1, Enchantment enchantment2, boolean compatible) {
         compatibilityMap.put(new EnchantmentPair(enchantment1, enchantment2), compatible);
     }
 
@@ -29,34 +29,35 @@ public class EnchantmentsCompatibilityManager {
     }
 
     public void populateCompatibilities() {
-        for (Enchantment enchantment1 : Services.REGISTRY.getRegisteredEnchantments().toList()) {
-            for (Enchantment enchantment2 : Services.REGISTRY.getRegisteredEnchantments().toList()) {
-                if (enchantment1 == enchantment2) continue;
-                addCompatibility(enchantment1, enchantment2, enchantment1.isCompatibleWith(enchantment2));
-            }
-        }
+        Services.REGISTRY.getRegisteredEnchantments().forEach(enchantment1 ->
+                Services.REGISTRY.getRegisteredEnchantments().forEach(enchantment2 -> {
+                    if (!enchantment1.equals(enchantment2)) {
+                        addCompatibility(enchantment1, enchantment2, enchantment1.isCompatibleWith(enchantment2));
+                    }
+                }));
     }
 
-    private record EnchantmentPair(Enchantment enchantment1, Enchantment enchantment2) {
-        public EnchantmentPair {
-            if (enchantment1.hashCode() > enchantment2.hashCode()) {
-                Enchantment temp = enchantment1;
-                enchantment1 = enchantment2;
-                enchantment2 = temp;
-            } else if (enchantment1.hashCode() == enchantment2.hashCode() && !enchantment1.equals(enchantment2)) {
-                if (enchantment1.toString().compareTo(enchantment2.toString()) > 0) {
-                    Enchantment temp = enchantment1;
-                    enchantment1 = enchantment2;
-                    enchantment2 = temp;
-                }
+    private static class EnchantmentPair {
+        private final Enchantment enchantment1;
+        private final Enchantment enchantment2;
+
+        public EnchantmentPair(Enchantment enchantment1, Enchantment enchantment2) {
+            if (enchantment1.hashCode() > enchantment2.hashCode() ||
+                    (enchantment1.hashCode() == enchantment2.hashCode() && enchantment1.toString().compareTo(enchantment2.toString()) > 0)) {
+                this.enchantment1 = enchantment2;
+                this.enchantment2 = enchantment1;
+            } else {
+                this.enchantment1 = enchantment1;
+                this.enchantment2 = enchantment2;
             }
         }
 
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (!(o instanceof EnchantmentPair that)) return false;
-            return enchantment1.equals(that.enchantment1) && enchantment2.equals(that.enchantment2);
+            if (!(o instanceof EnchantmentPair)) return false;
+            EnchantmentPair that = (EnchantmentPair) o;
+            return Objects.equals(enchantment1, that.enchantment1) && Objects.equals(enchantment2, that.enchantment2);
         }
 
         @Override

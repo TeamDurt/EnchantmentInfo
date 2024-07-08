@@ -26,82 +26,20 @@ public class EnchantmentDataManager {
         return instance;
     }
 
-    private void addIncompatibleEnchantments(Enchantment enchantment, List<Enchantment> incompatibleEnchantments) {
-        this.incompatibleEnchantments.put(enchantment, incompatibleEnchantments);
-    }
-
     public List<Enchantment> getIncompatibleEnchantments(Enchantment enchantment) {
-        return this.incompatibleEnchantments.get(enchantment);
-    }
-
-    private void populateIncompatibleEnchantments() {
-        EnchantmentsCompatibilityManager manager = EnchantmentsCompatibilityManager.getInstance();
-        for (Enchantment enchantment1 : Services.REGISTRY.getRegisteredEnchantments().toList()) {
-            ArrayList<Enchantment> incompatibleEnchantments = new ArrayList<>();
-            for (Enchantment enchantment2 : Services.REGISTRY.getRegisteredEnchantments().toList()) {
-                if (enchantment1.equals(enchantment2)) continue;
-                if (!manager.isCompatible(enchantment1, enchantment2)) incompatibleEnchantments.add(enchantment2);
-            }
-            addIncompatibleEnchantments(enchantment1, incompatibleEnchantments);
-        }
-    }
-
-    private void addEnchantmentCategory(Enchantment enchantment, ModEnchantmentCategory category) {
-        if (!this.enchantmentCategories.containsKey(enchantment)) {
-            this.enchantmentCategories.put(enchantment, new ArrayList<>());
-        }
-        this.enchantmentCategories.get(enchantment).add(category);
+        return incompatibleEnchantments.getOrDefault(enchantment, Collections.emptyList());
     }
 
     public List<ModEnchantmentCategory> getEnchantmentCategories(Enchantment enchantment) {
-        return this.enchantmentCategories.get(enchantment);
-    }
-
-    private void populateEnchantmentCategories() {
-        for (Enchantment enchantment : Services.REGISTRY.getRegisteredEnchantments().toList()) {
-            for (ModEnchantmentCategory category : ModEnchantmentCategoryManager.getInstance().getCategories()) {
-                ArrayList<Item> categoryItems = new ArrayList<>();
-                Services.REGISTRY.getRegisteredItems()
-                        .filter(category::canEnchant)
-                        .forEach(categoryItems::add);
-                if (categoryItems.stream().filter(item -> enchantment.canEnchant(new ItemStack(item))).count() > categoryItems.size() / 2) {
-                    addEnchantmentCategory(enchantment, category);
-                }
-            }
-        }
-    }
-
-    private void addIncludedItemGroups(Enchantment enchantment, List<Item> items) {
-        this.enchantmentIncludedItemGroups.put(enchantment, groupItemsByTags(items));
+        return enchantmentCategories.getOrDefault(enchantment, Collections.emptyList());
     }
 
     public List<List<Item>> getIncludedItemGroups(Enchantment enchantment) {
-        return this.enchantmentIncludedItemGroups.get(enchantment);
-    }
-
-    private void addExcludedItemGroups(Enchantment enchantment, List<Item> items) {
-        this.enchantmentExcludedItemGroups.put(enchantment, groupItemsByTags(items));
+        return enchantmentIncludedItemGroups.getOrDefault(enchantment, Collections.emptyList());
     }
 
     public List<List<Item>> getExcludedItemGroups(Enchantment enchantment) {
-        return this.enchantmentExcludedItemGroups.get(enchantment);
-    }
-
-    private void populateItemGroups() {
-        for (Enchantment enchantment : Services.REGISTRY.getRegisteredEnchantments().toList()) {
-            ArrayList<Item> includedItems = new ArrayList<>();
-            ArrayList<Item> excludedItems = new ArrayList<>();
-            Services.REGISTRY.getRegisteredItems()
-                    .filter(item -> enchantment.canEnchant(new ItemStack(item)))
-                    .filter(item -> getEnchantmentCategories(enchantment).stream().noneMatch(category -> category.canEnchant(item)))
-                    .forEach(includedItems::add);
-            Services.REGISTRY.getRegisteredItems()
-                    .filter(item -> !enchantment.canEnchant(new ItemStack(item)))
-                    .filter(item -> getEnchantmentCategories(enchantment).stream().anyMatch(category -> category.canEnchant(item)))
-                    .forEach(excludedItems::add);
-            addIncludedItemGroups(enchantment, includedItems);
-            addExcludedItemGroups(enchantment, excludedItems);
-        }
+        return enchantmentExcludedItemGroups.getOrDefault(enchantment, Collections.emptyList());
     }
 
     public void populateData() {
@@ -110,23 +48,86 @@ public class EnchantmentDataManager {
         populateItemGroups();
     }
 
+    private void populateIncompatibleEnchantments() {
+        EnchantmentsCompatibilityManager manager = EnchantmentsCompatibilityManager.getInstance();
+        Services.REGISTRY.getRegisteredEnchantments().forEach(enchantment1 -> {
+            List<Enchantment> incompatibleEnchantments = new ArrayList<>();
+            Services.REGISTRY.getRegisteredEnchantments().forEach(enchantment2 -> {
+                if (!enchantment1.equals(enchantment2) && !manager.isCompatible(enchantment1, enchantment2)) {
+                    incompatibleEnchantments.add(enchantment2);
+                }
+            });
+            this.incompatibleEnchantments.put(enchantment1, incompatibleEnchantments);
+        });
+    }
+
+    private void populateEnchantmentCategories() {
+        Services.REGISTRY.getRegisteredEnchantments().forEach(enchantment -> {
+            ModEnchantmentCategoryManager.getInstance().getCategories().forEach(category -> {
+                List<Item> categoryItems = Services.REGISTRY.getRegisteredItems()
+                        .filter(category::canEnchant)
+                        .toList();
+
+                long enchantedItemCount = categoryItems.stream()
+                        .filter(item -> enchantment.canEnchant(new ItemStack(item)))
+                        .count();
+
+                if (enchantedItemCount > categoryItems.size() / 2) {
+                    this.enchantmentCategories
+                            .computeIfAbsent(enchantment, k -> new ArrayList<>())
+                            .add(category);
+                }
+            });
+        });
+    }
+
+    private void populateItemGroups() {
+        Services.REGISTRY.getRegisteredEnchantments().forEach(enchantment -> {
+            List<ModEnchantmentCategory> enchantmentCategories = getEnchantmentCategories(enchantment);
+            List<Item> includedItems = new ArrayList<>();
+            List<Item> excludedItems = new ArrayList<>();
+
+            Services.REGISTRY.getRegisteredItems().forEach(item -> {
+                ItemStack itemStack = new ItemStack(item);
+                if (enchantment.canEnchant(itemStack)) {
+                    if (enchantmentCategories.stream().noneMatch(category -> category.canEnchant(item))) {
+                        includedItems.add(item);
+                    }
+                } else {
+                    if (enchantmentCategories.stream().anyMatch(category -> category.canEnchant(item))) {
+                        excludedItems.add(item);
+                    }
+                }
+            });
+
+            this.enchantmentIncludedItemGroups.put(enchantment, groupItemsByTags(includedItems));
+            this.enchantmentExcludedItemGroups.put(enchantment, groupItemsByTags(excludedItems));
+        });
+    }
+
     public static List<List<Item>> groupItemsByTags(List<Item> items) {
-        ArrayList<Item> input = new ArrayList<>(items);
-        ArrayList<ArrayList<Item>> groups = new ArrayList<>();
-        Services.REGISTRY.getRegisteredItemTags()
-                .map(tagKey -> items.stream()
-                        .filter(item -> new ItemStack(item).is(tagKey)))
-                .filter(stream -> stream.count() > 1)
-                .toList()
-                .forEach(stream -> groups.add(new ArrayList<>(stream.toList())));
-        ArrayList<List<Item>> result = new ArrayList<>();
+        List<Item> input = new ArrayList<>(items);
+        List<List<Item>> groups = new ArrayList<>();
+
+        Services.REGISTRY.getRegisteredItemTags().forEach(tagKey -> {
+            List<Item> taggedItems = items.stream()
+                    .filter(item -> new ItemStack(item).is(tagKey))
+                    .toList();
+
+            if (taggedItems.size() > 1) {
+                groups.add(taggedItems);
+            }
+        });
+
+        List<List<Item>> result = new ArrayList<>();
         while (!groups.isEmpty()) {
-            ArrayList<Item> biggestGroup = groups.stream().max(Comparator.comparingInt(List::size)).orElse(null);
+            List<Item> biggestGroup = groups.stream().max(Comparator.comparingInt(List::size)).orElse(null);
             result.add(biggestGroup);
             groups.remove(biggestGroup);
             input.removeAll(biggestGroup);
             groups.forEach(group -> group.removeAll(biggestGroup));
         }
+
         input.forEach(item -> result.add(Collections.singletonList(item)));
         return result;
     }

@@ -1,7 +1,7 @@
 package com.teamdurt.enchantmentinfo.category;
 
 import net.minecraft.world.item.Item;
-
+import java.util.Objects;
 import java.util.function.Predicate;
 
 public class ModEnchantmentCategory {
@@ -27,5 +27,10 @@ public class ModEnchantmentCategory {
         if (o == null || getClass() != o.getClass()) return false;
         ModEnchantmentCategory that = (ModEnchantmentCategory) o;
         return name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }
