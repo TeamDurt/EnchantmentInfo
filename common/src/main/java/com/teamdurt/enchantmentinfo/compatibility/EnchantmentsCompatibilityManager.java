@@ -1,5 +1,6 @@
 package com.teamdurt.enchantmentinfo.compatibility;
 
+import com.teamdurt.enchantmentinfo.platform.Services;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.enchantment.Enchantment;
 
@@ -29,8 +30,8 @@ public class EnchantmentsCompatibilityManager {
     }
 
     public void populateCompatibilities() {
-        for (Enchantment enchantment1 : BuiltInRegistries.ENCHANTMENT.stream().toList()) {
-            for (Enchantment enchantment2 : BuiltInRegistries.ENCHANTMENT.stream().toList()) {
+        for (Enchantment enchantment1 : Services.REGISTRY.getRegisteredEnchantments().toList()) {
+            for (Enchantment enchantment2 : Services.REGISTRY.getRegisteredEnchantments().toList()) {
                 if (enchantment1 == enchantment2) continue;
                 addCompatibility(enchantment1, enchantment2, enchantment1.isCompatibleWith(enchantment2));
             }

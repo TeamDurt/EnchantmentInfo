@@ -1,6 +1,7 @@
 package com.teamdurt.enchantmentinfo.category;
 
 import com.google.common.collect.ImmutableList;
+import com.teamdurt.enchantmentinfo.platform.Services;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
@@ -65,7 +66,7 @@ public class ModEnchantmentCategoryManager {
         addCategory(new ModEnchantmentCategory("hoe", item -> item instanceof HoeItem));
 
         categories.forEach(category -> {
-            BuiltInRegistries.ITEM.forEach(item -> {
+            Services.REGISTRY.getRegisteredItems().forEach(item -> {
                 if (category.canEnchant(item)) addItemToCategory(item, category);
             });
         });

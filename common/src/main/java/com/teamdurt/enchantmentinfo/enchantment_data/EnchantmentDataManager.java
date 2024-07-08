@@ -3,6 +3,7 @@ package com.teamdurt.enchantmentinfo.enchantment_data;
 import com.teamdurt.enchantmentinfo.category.ModEnchantmentCategory;
 import com.teamdurt.enchantmentinfo.category.ModEnchantmentCategoryManager;
 import com.teamdurt.enchantmentinfo.compatibility.EnchantmentsCompatibilityManager;
+import com.teamdurt.enchantmentinfo.platform.Services;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -38,9 +39,9 @@ public class EnchantmentDataManager {
 
     private void populateIncompatibleEnchantments() {
         EnchantmentsCompatibilityManager manager = EnchantmentsCompatibilityManager.getInstance();
-        for (Enchantment enchantment1 : BuiltInRegistries.ENCHANTMENT.stream().toList()) {
+        for (Enchantment enchantment1 : Services.REGISTRY.getRegisteredEnchantments().toList()) {
             ArrayList<Enchantment> incompatibleEnchantments = new ArrayList<>();
-            for (Enchantment enchantment2 : BuiltInRegistries.ENCHANTMENT.stream().toList()) {
+            for (Enchantment enchantment2 : Services.REGISTRY.getRegisteredEnchantments().toList()) {
                 if (enchantment1.equals(enchantment2)) continue;
                 if (!manager.isCompatible(enchantment1, enchantment2)) incompatibleEnchantments.add(enchantment2);
             }
@@ -60,10 +61,10 @@ public class EnchantmentDataManager {
     }
 
     private void populateEnchantmentCategories() {
-        for (Enchantment enchantment : BuiltInRegistries.ENCHANTMENT.stream().toList()) {
+        for (Enchantment enchantment : Services.REGISTRY.getRegisteredEnchantments().toList()) {
             for (ModEnchantmentCategory category : ModEnchantmentCategoryManager.getInstance().getCategories()) {
                 ArrayList<Item> categoryItems = new ArrayList<>();
-                BuiltInRegistries.ITEM.stream()
+                Services.REGISTRY.getRegisteredItems()
                         .filter(category::canEnchant)
                         .forEach(categoryItems::add);
                 if (categoryItems.stream().filter(item -> enchantment.canEnchant(new ItemStack(item))).count() > categoryItems.size() / 2) {
@@ -75,7 +76,7 @@ public class EnchantmentDataManager {
 
     private List<List<Item>> groupItemsByTags(List<Item> items) {
         ArrayList<ArrayList<Item>> groups = new ArrayList<>();
-        BuiltInRegistries.ITEM.getTagNames()
+        Services.REGISTRY.getRegisteredItemTags()
                 .map(tagKey -> items.stream()
                                 .filter(item -> new ItemStack(item).is(tagKey)))
                 .filter(stream -> stream.count() > 1)

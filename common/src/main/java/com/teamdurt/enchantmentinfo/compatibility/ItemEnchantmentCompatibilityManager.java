@@ -1,5 +1,6 @@
 package com.teamdurt.enchantmentinfo.compatibility;
 
+import com.teamdurt.enchantmentinfo.platform.Services;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -37,8 +38,8 @@ public class ItemEnchantmentCompatibilityManager {
     }
 
     public void populateCompatibilities() {
-        for (Item item : BuiltInRegistries.ITEM.stream().toList()) {
-            for (Enchantment enchantment : BuiltInRegistries.ENCHANTMENT.stream().toList()) {
+        for (Item item : Services.REGISTRY.getRegisteredItems().toList()) {
+            for (Enchantment enchantment : Services.REGISTRY.getRegisteredEnchantments().toList()) {
                 addCompatibility(item, enchantment, enchantment.canEnchant(new ItemStack(item)));
             }
         }
