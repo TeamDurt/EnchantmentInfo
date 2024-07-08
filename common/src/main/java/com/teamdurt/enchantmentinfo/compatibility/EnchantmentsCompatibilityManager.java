@@ -1,7 +1,6 @@
 package com.teamdurt.enchantmentinfo.compatibility;
 
 import com.teamdurt.enchantmentinfo.platform.Services;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.enchantment.Enchantment;
 
 import java.util.HashMap;

@@ -2,14 +2,10 @@ package com.teamdurt.enchantmentinfo.category;
 
 import com.google.common.collect.ImmutableList;
 import com.teamdurt.enchantmentinfo.platform.Services;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class ModEnchantmentCategoryManager {
     private static final List<EnchantmentCategory> FORBIDDEN_CATEGORIES = ImmutableList.of(EnchantmentCategory.ARMOR, EnchantmentCategory.DIGGER, EnchantmentCategory.WEARABLE, EnchantmentCategory.VANISHABLE);
@@ -43,7 +39,7 @@ public class ModEnchantmentCategoryManager {
 
     public void addItemToCategory(Item item, ModEnchantmentCategory category) {
         if (!categoryItems.containsKey(category)) {
-            categoryItems.put(category, new ImmutableList.Builder<Item>().add(item).build());
+            categoryItems.put(category, new ArrayList<>(Collections.singletonList(item)));
         } else {
             categoryItems.get(category).add(item);
         }
