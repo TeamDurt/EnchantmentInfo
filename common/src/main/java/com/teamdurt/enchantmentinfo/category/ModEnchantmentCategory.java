@@ -1,6 +1,7 @@
 package com.teamdurt.enchantmentinfo.category;
 
 import net.minecraft.world.item.Item;
+
 import java.util.Objects;
 import java.util.function.Predicate;
 

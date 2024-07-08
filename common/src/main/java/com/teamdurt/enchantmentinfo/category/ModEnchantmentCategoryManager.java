@@ -1,10 +1,16 @@
 package com.teamdurt.enchantmentinfo.category;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ModEnchantmentCategoryManager {
     private static final List<EnchantmentCategory> FORBIDDEN_CATEGORIES = ImmutableList.of(EnchantmentCategory.ARMOR, EnchantmentCategory.DIGGER, EnchantmentCategory.WEARABLE, EnchantmentCategory.VANISHABLE);
