@@ -24,6 +24,9 @@ public class ModEnchantmentCategoryManager {
 
     public void addCategory(ModEnchantmentCategory category) {
         categories.add(category);
+        Services.REGISTRY.getRegisteredItems().forEach(item -> {
+            if (category.canEnchant(item)) addItemToCategory(item, category);
+        });
     }
 
     public HashSet<ModEnchantmentCategory> getCategories() {
@@ -37,7 +40,7 @@ public class ModEnchantmentCategoryManager {
                 .orElse(null);
     }
 
-    public void addItemToCategory(Item item, ModEnchantmentCategory category) {
+    private void addItemToCategory(Item item, ModEnchantmentCategory category) {
         if (!categoryItems.containsKey(category)) {
             categoryItems.put(category, new ArrayList<>(Collections.singletonList(item)));
         } else {
@@ -60,11 +63,5 @@ public class ModEnchantmentCategoryManager {
         addCategory(new ModEnchantmentCategory("axe", item -> item instanceof AxeItem));
         addCategory(new ModEnchantmentCategory("shovel", item -> item instanceof ShovelItem));
         addCategory(new ModEnchantmentCategory("hoe", item -> item instanceof HoeItem));
-
-        categories.forEach(category -> {
-            Services.REGISTRY.getRegisteredItems().forEach(item -> {
-                if (category.canEnchant(item)) addItemToCategory(item, category);
-            });
-        });
     }
 }

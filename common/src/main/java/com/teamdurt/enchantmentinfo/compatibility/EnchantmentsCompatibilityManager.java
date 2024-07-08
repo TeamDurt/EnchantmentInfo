@@ -20,7 +20,7 @@ public class EnchantmentsCompatibilityManager {
         return instance;
     }
 
-    public void addCompatibility(Enchantment enchantment1, Enchantment enchantment2, boolean compatible) {
+    private void addCompatibility(Enchantment enchantment1, Enchantment enchantment2, boolean compatible) {
         compatibilityMap.put(new EnchantmentPair(enchantment1, enchantment2), compatible);
     }
 

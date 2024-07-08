@@ -26,7 +26,7 @@ public class EnchantmentDataManager {
         return instance;
     }
 
-    public void addIncompatibleEnchantments(Enchantment enchantment, List<Enchantment> incompatibleEnchantments) {
+    private void addIncompatibleEnchantments(Enchantment enchantment, List<Enchantment> incompatibleEnchantments) {
         this.incompatibleEnchantments.put(enchantment, incompatibleEnchantments);
     }
 
@@ -46,7 +46,7 @@ public class EnchantmentDataManager {
         }
     }
 
-    public void addEnchantmentCategory(Enchantment enchantment, ModEnchantmentCategory category) {
+    private void addEnchantmentCategory(Enchantment enchantment, ModEnchantmentCategory category) {
         if (!this.enchantmentCategories.containsKey(enchantment)) {
             this.enchantmentCategories.put(enchantment, new ArrayList<>());
         }
@@ -71,19 +71,63 @@ public class EnchantmentDataManager {
         }
     }
 
-    private List<List<Item>> groupItemsByTags(List<Item> items) {
-        ArrayList<ArrayList<Item>> groups = new ArrayList<>();
-        Services.REGISTRY.getRegisteredItemTags()
-                .map(tagKey -> items.stream()
-                                .filter(item -> new ItemStack(item).is(tagKey)))
-                .filter(stream -> stream.count() > 1)
-                .toList()
-                .forEach(stream -> groups.add(new ArrayList<>(stream.toList())));
-        return new ArrayList<>();
+    private void addIncludedItemGroups(Enchantment enchantment, List<Item> items) {
+        this.enchantmentIncludedItemGroups.put(enchantment, groupItemsByTags(items));
+    }
+
+    public List<List<Item>> getIncludedItemGroups(Enchantment enchantment) {
+        return this.enchantmentIncludedItemGroups.get(enchantment);
+    }
+
+    private void addExcludedItemGroups(Enchantment enchantment, List<Item> items) {
+        this.enchantmentExcludedItemGroups.put(enchantment, groupItemsByTags(items));
+    }
+
+    public List<List<Item>> getExcludedItemGroups(Enchantment enchantment) {
+        return this.enchantmentExcludedItemGroups.get(enchantment);
+    }
+
+    private void populateItemGroups() {
+        for (Enchantment enchantment : Services.REGISTRY.getRegisteredEnchantments().toList()) {
+            ArrayList<Item> includedItems = new ArrayList<>();
+            ArrayList<Item> excludedItems = new ArrayList<>();
+            Services.REGISTRY.getRegisteredItems()
+                    .filter(item -> enchantment.canEnchant(new ItemStack(item)))
+                    .filter(item -> getEnchantmentCategories(enchantment).stream().noneMatch(category -> category.canEnchant(item)))
+                    .forEach(includedItems::add);
+            Services.REGISTRY.getRegisteredItems()
+                    .filter(item -> !enchantment.canEnchant(new ItemStack(item)))
+                    .filter(item -> getEnchantmentCategories(enchantment).stream().anyMatch(category -> category.canEnchant(item)))
+                    .forEach(excludedItems::add);
+            addIncludedItemGroups(enchantment, includedItems);
+            addExcludedItemGroups(enchantment, excludedItems);
+        }
     }
 
     public void populateData() {
         populateIncompatibleEnchantments();
         populateEnchantmentCategories();
+        populateItemGroups();
+    }
+
+    public static List<List<Item>> groupItemsByTags(List<Item> items) {
+        ArrayList<Item> input = new ArrayList<>(items);
+        ArrayList<ArrayList<Item>> groups = new ArrayList<>();
+        Services.REGISTRY.getRegisteredItemTags()
+                .map(tagKey -> items.stream()
+                        .filter(item -> new ItemStack(item).is(tagKey)))
+                .filter(stream -> stream.count() > 1)
+                .toList()
+                .forEach(stream -> groups.add(new ArrayList<>(stream.toList())));
+        ArrayList<List<Item>> result = new ArrayList<>();
+        while (!groups.isEmpty()) {
+            ArrayList<Item> biggestGroup = groups.stream().max(Comparator.comparingInt(List::size)).orElse(null);
+            result.add(biggestGroup);
+            groups.remove(biggestGroup);
+            input.removeAll(biggestGroup);
+            groups.forEach(group -> group.removeAll(biggestGroup));
+        }
+        input.forEach(item -> result.add(Collections.singletonList(item)));
+        return result;
     }
 }
