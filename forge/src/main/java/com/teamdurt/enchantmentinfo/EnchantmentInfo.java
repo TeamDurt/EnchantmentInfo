@@ -2,9 +2,8 @@ package com.teamdurt.enchantmentinfo;
 
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 
 @Mod(Constants.MOD_ID)
 public class EnchantmentInfo {
@@ -14,12 +13,10 @@ public class EnchantmentInfo {
 
         CommonClass.initMain();
 
-        modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::clientSetup);
     }
 
-    private void commonSetup(final FMLCommonSetupEvent event) {
-        if (FMLEnvironment.dist.isClient()) {
-            CommonClass.initClient();
-        }
+    private void clientSetup(FMLClientSetupEvent event) {
+        CommonClass.initClient();
     }
 }
