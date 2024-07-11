@@ -12,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 import java.util.List;
-import java.util.Optional;
 
 public class ParentTooltip implements ClientTooltipComponent {
     List<ClientTooltipComponent> childTooltips;
@@ -61,10 +60,12 @@ public class ParentTooltip implements ClientTooltipComponent {
     public int getHeight() {
         int height = 0;
         if (orientation == Orientation.VERTICAL) {
+            height += spaceBefore;
             for (ClientTooltipComponent childTooltip : childTooltips) {
                 height += childTooltip.getHeight() + gap;
             }
-            if (height >= gap) height -= gap;
+            height += spaceAfter;
+            if (!childTooltips.isEmpty()) height -= gap;
         } else {
             for (ClientTooltipComponent childTooltip : childTooltips) {
                 height = Math.max(childTooltip.getHeight(), height);
@@ -77,10 +78,12 @@ public class ParentTooltip implements ClientTooltipComponent {
     public int getWidth(@NotNull Font font) {
         int width = 0;
         if (orientation == Orientation.HORIZONTAL) {
+            width += spaceBefore;
             for (ClientTooltipComponent childComponent : childTooltips) {
                 width += childComponent.getWidth(font) + gap;
             }
-            if (width >= gap) width -= gap;
+            width += spaceAfter;
+            if (!childTooltips.isEmpty()) width -= gap;
         } else {
             for (ClientTooltipComponent childComponent : childTooltips) {
                 width = Math.max(childComponent.getWidth(font), width);
@@ -107,6 +110,11 @@ public class ParentTooltip implements ClientTooltipComponent {
     public void renderImage(@NotNull Font font, int x, int y, @NotNull GuiGraphics guiGraphics) {
         int newX = x;
         int newY = y;
+        if (orientation == Orientation.VERTICAL) {
+            newY += spaceBefore;
+        } else {
+            newX += spaceBefore;
+        }
         for (ClientTooltipComponent childTooltip : childTooltips) {
             childTooltip.renderImage(font, newX, newY, guiGraphics);
             if (orientation == Orientation.HORIZONTAL) {
