@@ -1,5 +1,6 @@
 package com.teamdurt.enchantmentinfo.category;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
 import java.util.Objects;
@@ -20,6 +21,10 @@ public class ModEnchantmentCategory {
 
     public boolean canEnchant(Item item) {
         return this.canEnchant.test(item);
+    }
+
+    public ResourceLocation getTexture() {
+        return new ResourceLocation("enchantmentinfo", "textures/tooltip/category/" + this.getName() + ".png");
     }
 
     @Override
