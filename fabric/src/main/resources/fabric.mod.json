@@ -13,10 +13,10 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "com.teamdurt.enchantmentinfo.EnchantmentInfo"
+            "team.durt.enchantmentinfo.EnchantmentInfo"
         ],
         "client": [
-            "com.teamdurt.enchantmentinfo.EnchantmentInfoClient"
+            "team.durt.enchantmentinfo.EnchantmentInfoClient"
         ]
     },
     "mixins": [
