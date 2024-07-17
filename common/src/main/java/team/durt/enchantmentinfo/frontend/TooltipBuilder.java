@@ -1,14 +1,6 @@
 package team.durt.enchantmentinfo.frontend;
 
 import com.mojang.datafixers.util.Pair;
-import team.durt.enchantmentinfo.category.ModEnchantmentCategory;
-import team.durt.enchantmentinfo.category.ModEnchantmentCategoryManager;
-import team.durt.enchantmentinfo.enchantment_data.EnchantmentDataManager;
-import team.durt.enchantmentinfo.frontend.tooltip.EnchantmentCategoryTooltip;
-import team.durt.enchantmentinfo.frontend.tooltip.ItemTooltip;
-import team.durt.enchantmentinfo.frontend.tooltip.line.GreenLineTooltip;
-import team.durt.enchantmentinfo.frontend.tooltip.ParentTooltip;
-import team.durt.enchantmentinfo.frontend.tooltip.line.RedLineTooltip;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -16,11 +8,20 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.apache.commons.compress.utils.Lists;
+import team.durt.enchantmentinfo.category.ModEnchantmentCategory;
+import team.durt.enchantmentinfo.category.ModEnchantmentCategoryManager;
+import team.durt.enchantmentinfo.enchantment_data.EnchantmentDataManager;
+import team.durt.enchantmentinfo.frontend.tooltip.EnchantmentCategoryTooltip;
+import team.durt.enchantmentinfo.frontend.tooltip.ItemTooltip;
+import team.durt.enchantmentinfo.frontend.tooltip.ParentTooltip;
+import team.durt.enchantmentinfo.frontend.tooltip.line.GreenLineTooltip;
+import team.durt.enchantmentinfo.frontend.tooltip.line.RedLineTooltip;
 
 import java.util.List;
 
@@ -225,8 +226,15 @@ public class TooltipBuilder {
         return enchantments;
     }
 
+    /** from {@link Enchantment#getFullname(int)} */
     private static Component getEnchantmentName(Enchantment enchantment) {
-        return Component.translatable(enchantment.getDescriptionId());
+        MutableComponent name = Component.translatable(enchantment.getDescriptionId());
+        if (enchantment.isCurse()) {
+            name.withStyle(ChatFormatting.RED);
+        } else {
+            name.withStyle(ChatFormatting.GRAY);
+        }
+        return name;
     }
 
     private static Component getEnchantmentName(Pair<Enchantment, Integer> enchantmentWithLevel) {
