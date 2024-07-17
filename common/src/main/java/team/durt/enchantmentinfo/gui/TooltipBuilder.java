@@ -1,6 +1,5 @@
 package team.durt.enchantmentinfo.gui;
 
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -13,16 +12,17 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import org.apache.commons.compress.utils.Lists;
 import team.durt.enchantmentinfo.category.ModEnchantmentCategory;
 import team.durt.enchantmentinfo.category.ModEnchantmentCategoryManager;
 import team.durt.enchantmentinfo.enchantment_data.EnchantmentDataManager;
-import team.durt.enchantmentinfo.gui.tooltip.texture.EnchantmentCategoryTooltip;
-import team.durt.enchantmentinfo.gui.tooltip.SwitcherTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.ItemTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.ParentTooltip;
+import team.durt.enchantmentinfo.gui.tooltip.SwitcherTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.line.GreenLineTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.line.RedLineTooltip;
+import team.durt.enchantmentinfo.gui.tooltip.texture.EnchantmentCategoryTooltip;
 
 import java.util.List;
 
@@ -65,16 +65,16 @@ public class TooltipBuilder {
     private static void addCustomTooltips(List<Component> components, ListTag enchantmentTags) {
         List<ClientTooltipComponent> tooltips = Lists.newArrayList();
 
-        List<Pair<Enchantment, Integer>> enchantments = getEnchantmentsFromTag(enchantmentTags);
+        List<EnchantmentInstance> enchantments = getEnchantmentsFromTag(enchantmentTags);
 
-        for (Pair<Enchantment, Integer> enchantmentWithLevel : enchantments) {
-            Enchantment enchantment = enchantmentWithLevel.getFirst();
+        for (EnchantmentInstance enchantmentInstance : enchantments) {
+            Enchantment enchantment = enchantmentInstance.enchantment;
 
             //parent tooltip
             ParentTooltip mainParent = new ParentTooltip();
 
             //enchantment name
-            mainParent.addChild(getEnchantmentName(enchantmentWithLevel));
+            mainParent.addChild(getEnchantmentName(enchantmentInstance));
             //incompatible enchantments
             mainParent.addChild(parseIncompatibleEnchantments(enchantment));
             //matching items
@@ -213,14 +213,14 @@ public class TooltipBuilder {
         components.add(releaseShiftComponent);
     }
 
-    private static List<Pair<Enchantment, Integer>> getEnchantmentsFromTag(ListTag enchantmentTag) {
-        List<Pair<Enchantment, Integer>> enchantments = Lists.newArrayList();
+    private static List<EnchantmentInstance> getEnchantmentsFromTag(ListTag enchantmentTag) {
+        List<EnchantmentInstance> enchantments = Lists.newArrayList();
         for (int i = 0; i < enchantmentTag.size(); i++) {
             CompoundTag compoundTag = enchantmentTag.getCompound(i);
             BuiltInRegistries.ENCHANTMENT
                     .getOptional(EnchantmentHelper.getEnchantmentId(compoundTag))
                     .ifPresent(enchantment -> enchantments.add(
-                            Pair.of(
+                            new EnchantmentInstance(
                                     enchantment,
                                     EnchantmentHelper.getEnchantmentLevel(compoundTag)
                             )
@@ -240,9 +240,9 @@ public class TooltipBuilder {
         return name;
     }
 
-    private static Component getEnchantmentName(Pair<Enchantment, Integer> enchantmentWithLevel) {
-        Enchantment enchantment = enchantmentWithLevel.getFirst();
-        Integer level = enchantmentWithLevel.getSecond();
+    private static Component getEnchantmentName(EnchantmentInstance enchantmentInstance) {
+        Enchantment enchantment = enchantmentInstance.enchantment;
+        int level = enchantmentInstance.level;
         return enchantment.getFullname(level);
     }
 }
