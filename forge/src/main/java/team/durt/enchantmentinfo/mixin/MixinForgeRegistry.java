@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import team.durt.enchantmentinfo.enchantment_data.EnchantmentDataManager;
+import team.durt.enchantmentinfo.CommonClass;
 
 @Mixin(value = net.minecraftforge.registries.ForgeRegistry.class, remap = false)
 public class MixinForgeRegistry<V> {
@@ -15,7 +15,7 @@ public class MixinForgeRegistry<V> {
     @Inject(method = "onBindTags", at = @At(value = "TAIL"))
     private void initEIItemGroups(CallbackInfo ci) {
         if (this.defaultValue instanceof Item) {
-            EnchantmentDataManager.getInstance().populateItemGroups();
+            CommonClass.initTagDependent();
         }
     }
 }

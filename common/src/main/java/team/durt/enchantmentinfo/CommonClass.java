@@ -13,12 +13,17 @@ public class CommonClass {
         }
     }
 
-    public static void  initClient() {
+    public static void initClient() {
         int startTime = (int) System.currentTimeMillis();
         ModEnchantmentCategoryManager.getInstance().populateCategories();
         EnchantmentsCompatibilityManager.getInstance().populateCompatibilities();
         EnchantmentDataManager.getInstance().populateIncompatibleEnchantments();
         EnchantmentDataManager.getInstance().populateEnchantmentCategories();
+
         Constants.LOG.info("EnchantmentInfo initial initialization took " + ((int) System.currentTimeMillis() - startTime) + "ms");
+    }
+
+    public static void initTagDependent() {
+        EnchantmentDataManager.getInstance().populateItemGroups();
     }
 }

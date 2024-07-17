@@ -19,6 +19,6 @@ public class EnchantmentInfoClient implements ClientModInitializer {
     }
 
     private void onTagsLoaded(RegistryAccess registryAccess, boolean b) {
-        EnchantmentDataManager.getInstance().populateItemGroups();
+        CommonClass.initTagDependent();
     }
 }

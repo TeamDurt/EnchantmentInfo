@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import team.durt.enchantmentinfo.CommonClass;
 import team.durt.enchantmentinfo.enchantment_data.EnchantmentDataManager;
 
 import java.util.Iterator;
@@ -27,7 +28,7 @@ public abstract class MixinMappedRegistry<T> {
         Optional<Holder.Reference<T>> first = this.lookup.listElements().findFirst();
         first.ifPresent(holder -> {
             if (holder.value() instanceof Item) {
-                EnchantmentDataManager.getInstance().populateItemGroups();
+                CommonClass.initTagDependent();
             }
         });
     }
