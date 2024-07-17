@@ -1,4 +1,4 @@
-package team.durt.enchantmentinfo.frontend.tooltip;
+package team.durt.enchantmentinfo.frontend.tooltip.texture;
 
 import team.durt.enchantmentinfo.category.ModEnchantmentCategory;
 

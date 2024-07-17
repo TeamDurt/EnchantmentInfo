@@ -17,7 +17,7 @@ import org.apache.commons.compress.utils.Lists;
 import team.durt.enchantmentinfo.category.ModEnchantmentCategory;
 import team.durt.enchantmentinfo.category.ModEnchantmentCategoryManager;
 import team.durt.enchantmentinfo.enchantment_data.EnchantmentDataManager;
-import team.durt.enchantmentinfo.frontend.tooltip.EnchantmentCategoryTooltip;
+import team.durt.enchantmentinfo.frontend.tooltip.texture.EnchantmentCategoryTooltip;
 import team.durt.enchantmentinfo.frontend.tooltip.SwitcherTooltip;
 import team.durt.enchantmentinfo.frontend.tooltip.ItemTooltip;
 import team.durt.enchantmentinfo.frontend.tooltip.ParentTooltip;
