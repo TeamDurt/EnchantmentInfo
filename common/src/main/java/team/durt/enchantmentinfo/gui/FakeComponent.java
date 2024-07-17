@@ -1,4 +1,4 @@
-package team.durt.enchantmentinfo.frontend;
+package team.durt.enchantmentinfo.gui;
 
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;

@@ -1,4 +1,4 @@
-package team.durt.enchantmentinfo.frontend.tooltip;
+package team.durt.enchantmentinfo.gui.tooltip;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;

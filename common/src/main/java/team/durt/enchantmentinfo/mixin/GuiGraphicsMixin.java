@@ -7,7 +7,7 @@ import org.apache.commons.compress.utils.Lists;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import team.durt.enchantmentinfo.frontend.FakeComponent;
+import team.durt.enchantmentinfo.gui.FakeComponent;
 
 import java.util.List;
 

@@ -1,21 +1,24 @@
-package team.durt.enchantmentinfo.frontend.tooltip.texture;
+package team.durt.enchantmentinfo.gui.tooltip.line;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class TexturedTooltip implements ClientTooltipComponent {
-    ResourceLocation texture;
-    int width;
+public class ColoredLineTooltip implements ClientTooltipComponent {
+    int color;
     int height;
+    int width = 2;
 
-    public TexturedTooltip(ResourceLocation texture, int width, int height) {
-        this.texture = texture;
-        this.width = width;
+    public ColoredLineTooltip(int color, int height) {
+        this.color = color;
         this.height = height;
     }
+
+    public int getColor() {
+        return color;
+    }
+
     @Override
     public int getHeight() {
         return height;
@@ -28,8 +31,6 @@ public class TexturedTooltip implements ClientTooltipComponent {
 
     @Override
     public void renderImage(@NotNull Font font, int x, int y, @NotNull GuiGraphics guiGraphics) {
-        int width = getWidth(font);
-        int height = getHeight();
-        guiGraphics.blit(texture, x, y, 0, 0, width, height, width, height);
+        guiGraphics.fill(x, y, x + getWidth(font), y + getHeight(), getColor());
     }
 }

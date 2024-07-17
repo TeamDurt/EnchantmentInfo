@@ -1,4 +1,4 @@
-package team.durt.enchantmentinfo.frontend.tooltip.line;
+package team.durt.enchantmentinfo.gui.tooltip.line;
 
 public class RedLineTooltip extends ColoredLineTooltip {
     public static final int RED_COLOR = -1240534; //#ffed122a

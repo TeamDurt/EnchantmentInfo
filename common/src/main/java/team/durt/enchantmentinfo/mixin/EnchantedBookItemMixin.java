@@ -1,6 +1,6 @@
 package team.durt.enchantmentinfo.mixin;
 
-import team.durt.enchantmentinfo.frontend.TooltipBuilder;
+import team.durt.enchantmentinfo.gui.TooltipBuilder;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.EnchantedBookItem;

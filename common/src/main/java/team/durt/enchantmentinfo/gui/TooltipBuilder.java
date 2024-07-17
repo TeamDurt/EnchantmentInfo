@@ -1,4 +1,4 @@
-package team.durt.enchantmentinfo.frontend;
+package team.durt.enchantmentinfo.gui;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.ChatFormatting;
@@ -17,12 +17,12 @@ import org.apache.commons.compress.utils.Lists;
 import team.durt.enchantmentinfo.category.ModEnchantmentCategory;
 import team.durt.enchantmentinfo.category.ModEnchantmentCategoryManager;
 import team.durt.enchantmentinfo.enchantment_data.EnchantmentDataManager;
-import team.durt.enchantmentinfo.frontend.tooltip.texture.EnchantmentCategoryTooltip;
-import team.durt.enchantmentinfo.frontend.tooltip.SwitcherTooltip;
-import team.durt.enchantmentinfo.frontend.tooltip.ItemTooltip;
-import team.durt.enchantmentinfo.frontend.tooltip.ParentTooltip;
-import team.durt.enchantmentinfo.frontend.tooltip.line.GreenLineTooltip;
-import team.durt.enchantmentinfo.frontend.tooltip.line.RedLineTooltip;
+import team.durt.enchantmentinfo.gui.tooltip.texture.EnchantmentCategoryTooltip;
+import team.durt.enchantmentinfo.gui.tooltip.SwitcherTooltip;
+import team.durt.enchantmentinfo.gui.tooltip.ItemTooltip;
+import team.durt.enchantmentinfo.gui.tooltip.ParentTooltip;
+import team.durt.enchantmentinfo.gui.tooltip.line.GreenLineTooltip;
+import team.durt.enchantmentinfo.gui.tooltip.line.RedLineTooltip;
 
 import java.util.List;
 
