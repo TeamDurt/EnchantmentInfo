@@ -1,6 +1,5 @@
 package team.durt.enchantmentinfo.platform;
 
-import team.durt.enchantmentinfo.platform.services.IPlatformHelper;
 import team.durt.enchantmentinfo.platform.services.IRegistryHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;

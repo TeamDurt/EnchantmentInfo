@@ -42,13 +42,7 @@ public class EnchantmentDataManager {
         return enchantmentExcludedItemGroups.getOrDefault(enchantment, Collections.emptyList());
     }
 
-    public void populateData() {
-        populateIncompatibleEnchantments();
-        populateEnchantmentCategories();
-        populateItemGroups();
-    }
-
-    private void populateIncompatibleEnchantments() {
+    public void populateIncompatibleEnchantments() {
         EnchantmentsCompatibilityManager manager = EnchantmentsCompatibilityManager.getInstance();
         Services.REGISTRY.getRegisteredEnchantments().forEach(enchantment1 -> {
             List<Enchantment> incompatibleEnchantments = new ArrayList<>();
@@ -61,7 +55,7 @@ public class EnchantmentDataManager {
         });
     }
 
-    private void populateEnchantmentCategories() {
+    public void populateEnchantmentCategories() {
         Services.REGISTRY.getRegisteredEnchantments().forEach(enchantment -> {
             ModEnchantmentCategoryManager.getInstance().getCategories().forEach(category -> {
                 List<Item> categoryItems = Services.REGISTRY.getRegisteredItems()
@@ -81,7 +75,7 @@ public class EnchantmentDataManager {
         });
     }
 
-    private void populateItemGroups() {
+    public void populateItemGroups() {
         Services.REGISTRY.getRegisteredEnchantments().forEach(enchantment -> {
             List<ModEnchantmentCategory> enchantmentCategories = getEnchantmentCategories(enchantment);
             List<Item> includedItems = new ArrayList<>();
@@ -115,7 +109,7 @@ public class EnchantmentDataManager {
                     .toList();
 
             if (taggedItems.size() > 1) {
-                groups.add(taggedItems);
+                groups.add(new ArrayList<>(taggedItems));
             }
         });
 
@@ -126,6 +120,7 @@ public class EnchantmentDataManager {
             groups.remove(biggestGroup);
             input.removeAll(biggestGroup);
             groups.forEach(group -> group.removeAll(biggestGroup));
+            groups.removeIf(List::isEmpty);
         }
 
         input.forEach(item -> result.add(Collections.singletonList(item)));
