@@ -1,19 +1,15 @@
 package team.durt.enchantmentinfo.category;
 
-import com.google.common.collect.ImmutableList;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class ModEnchantmentCategoryManager {
-    private static final List<EnchantmentCategory> FORBIDDEN_CATEGORIES = ImmutableList.of(EnchantmentCategory.ARMOR, EnchantmentCategory.DIGGER, EnchantmentCategory.WEARABLE, EnchantmentCategory.VANISHABLE);
     private static ModEnchantmentCategoryManager instance;
     private final Set<ModEnchantmentCategory> categories = new HashSet<>();
 
@@ -42,11 +38,19 @@ public class ModEnchantmentCategoryManager {
     }
 
     public void populateCategories() {
-        Arrays.stream(EnchantmentCategory.values())
-                .filter(category -> !FORBIDDEN_CATEGORIES.contains(category))
-                .map(vanillaCategory -> new ModEnchantmentCategory(vanillaCategory.name().toLowerCase(), vanillaCategory::canEnchant))
-                .forEach(this::addCategory);
+        /* Vanilla categories */
+        addCategory(new ModEnchantmentCategory("armor_feet", EnchantmentCategory.ARMOR_FEET::canEnchant));
+        addCategory(new ModEnchantmentCategory("armor_legs", EnchantmentCategory.ARMOR_LEGS::canEnchant));
+        addCategory(new ModEnchantmentCategory("armor_chest", EnchantmentCategory.ARMOR_CHEST::canEnchant));
+        addCategory(new ModEnchantmentCategory("armor_head", EnchantmentCategory.ARMOR_HEAD::canEnchant));
+        addCategory(new ModEnchantmentCategory("weapon", EnchantmentCategory.WEAPON::canEnchant));
+        addCategory(new ModEnchantmentCategory("fishing_rod", EnchantmentCategory.FISHING_ROD::canEnchant));
+        addCategory(new ModEnchantmentCategory("trident", EnchantmentCategory.TRIDENT::canEnchant));
+        addCategory(new ModEnchantmentCategory("breakable", EnchantmentCategory.BREAKABLE::canEnchant));
+        addCategory(new ModEnchantmentCategory("bow", EnchantmentCategory.BOW::canEnchant));
+        addCategory(new ModEnchantmentCategory("crossbow", EnchantmentCategory.CROSSBOW::canEnchant));
 
+        /* Custom categories */
         addCategory(new ModEnchantmentCategory("pickaxe", item -> item instanceof PickaxeItem));
         addCategory(new ModEnchantmentCategory("axe", item -> item instanceof AxeItem));
         addCategory(new ModEnchantmentCategory("shovel", item -> item instanceof ShovelItem));
