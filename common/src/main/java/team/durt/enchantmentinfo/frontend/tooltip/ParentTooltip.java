@@ -13,7 +13,7 @@ import org.joml.Matrix4f;
 
 import java.util.List;
 
-public class ParentTooltip implements ClientTooltipComponent {
+public class ParentTooltip implements ClientTooltipComponent, Parent<ClientTooltipComponent> {
     List<ClientTooltipComponent> childTooltips;
     Orientation orientation;
     int gap;
@@ -34,18 +34,27 @@ public class ParentTooltip implements ClientTooltipComponent {
     }
 
     public ParentTooltip(List<ClientTooltipComponent> childTooltips, Orientation orientation, int gap) {
-        this.childTooltips = childTooltips;
+        setChildList(childTooltips);
         this.orientation = orientation;
         this.gap = gap;
     }
 
-    public void addChild(@Nullable ClientTooltipComponent tooltip) {
-        if (tooltip == null) return;
-        childTooltips.add(tooltip);
+    public ClientTooltipComponent addChild(@Nullable ClientTooltipComponent tooltip) {
+        if (tooltip == null) return this;
+        this.childTooltips.add(tooltip);
+        return this;
     }
 
-    public void addChild(Component component) {
-        addChild(new ClientTextTooltip(component.getVisualOrderText()));
+    public void setChildList(List<ClientTooltipComponent> childList) {
+        this.childTooltips = childList;
+    }
+
+    public List<ClientTooltipComponent> getChildList() {
+        return this.childTooltips;
+    }
+
+    public ClientTooltipComponent addChild(Component component) {
+        return addChild(new ClientTextTooltip(component.getVisualOrderText()));
     }
 
     public void setSpaceBefore(int gap) {

@@ -18,6 +18,7 @@ import team.durt.enchantmentinfo.category.ModEnchantmentCategory;
 import team.durt.enchantmentinfo.category.ModEnchantmentCategoryManager;
 import team.durt.enchantmentinfo.enchantment_data.EnchantmentDataManager;
 import team.durt.enchantmentinfo.frontend.tooltip.EnchantmentCategoryTooltip;
+import team.durt.enchantmentinfo.frontend.tooltip.SwitcherTooltip;
 import team.durt.enchantmentinfo.frontend.tooltip.ItemTooltip;
 import team.durt.enchantmentinfo.frontend.tooltip.ParentTooltip;
 import team.durt.enchantmentinfo.frontend.tooltip.line.GreenLineTooltip;
@@ -187,9 +188,11 @@ public class TooltipBuilder {
 
         ParentTooltip parent = new ParentTooltip(ParentTooltip.Orientation.HORIZONTAL, 2);
         for (List<Item> itemGroup : itemGroups) {
+            SwitcherTooltip items = new SwitcherTooltip();
             for (Item item : itemGroup) {
-                parent.addChild(new ItemTooltip(item));
+                items.addChild(new ItemTooltip(item));
             }
+            parent.addChild(items);
         }
         return parent;
     }
