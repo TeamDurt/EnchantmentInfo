@@ -7,7 +7,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -17,6 +16,7 @@ import org.apache.commons.compress.utils.Lists;
 import team.durt.enchantmentinfo.category.ModEnchantmentCategory;
 import team.durt.enchantmentinfo.category.ModEnchantmentCategoryManager;
 import team.durt.enchantmentinfo.enchantment_data.EnchantmentDataManager;
+import team.durt.enchantmentinfo.gui.tooltip.EnchantmentNameTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.ItemTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.ParentTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.SwitcherTooltip;
@@ -74,7 +74,7 @@ public class TooltipBuilder {
             ParentTooltip mainParent = new ParentTooltip();
 
             //enchantment name
-            mainParent.addChild(getEnchantmentName(enchantmentInstance));
+            mainParent.addChild(parseEnchantmentName(enchantmentInstance));
             //incompatible enchantments
             mainParent.addChild(parseIncompatibleEnchantments(enchantment));
             //matching items
@@ -88,6 +88,14 @@ public class TooltipBuilder {
         components.addAll(FakeComponent.tooltipsToComponents(tooltips));
     }
 
+    private static EnchantmentNameTooltip parseEnchantmentName(Enchantment enchantment) {
+        return new EnchantmentNameTooltip(enchantment);
+    }
+
+    private static EnchantmentNameTooltip parseEnchantmentName(EnchantmentInstance enchantmentInstance) {
+        return new EnchantmentNameTooltip(enchantmentInstance);
+    }
+
     private static ClientTooltipComponent parseIncompatibleEnchantments(Enchantment enchantment) {
         List<Enchantment> incompatibleEnchantments = enchantmentDataManager.getIncompatibleEnchantments(enchantment);
 
@@ -98,7 +106,7 @@ public class TooltipBuilder {
         ParentTooltip incompatiblesList = new ParentTooltip();
         for (Enchantment incompatibleEnchantment : incompatibleEnchantments) {
             incompatiblesList.addChild(
-                    getEnchantmentName(incompatibleEnchantment)
+                    parseEnchantmentName(incompatibleEnchantment)
             );
         }
 
@@ -227,22 +235,5 @@ public class TooltipBuilder {
                     ));
         }
         return enchantments;
-    }
-
-    /** from {@link Enchantment#getFullname(int)} */
-    private static Component getEnchantmentName(Enchantment enchantment) {
-        MutableComponent name = Component.translatable(enchantment.getDescriptionId());
-        if (enchantment.isCurse()) {
-            name.withStyle(ChatFormatting.RED);
-        } else {
-            name.withStyle(ChatFormatting.GRAY);
-        }
-        return name;
-    }
-
-    private static Component getEnchantmentName(EnchantmentInstance enchantmentInstance) {
-        Enchantment enchantment = enchantmentInstance.enchantment;
-        int level = enchantmentInstance.level;
-        return enchantment.getFullname(level);
     }
 }

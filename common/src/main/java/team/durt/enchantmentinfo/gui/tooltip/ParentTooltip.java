@@ -2,10 +2,8 @@ package team.durt.enchantmentinfo.gui.tooltip;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.network.chat.Component;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -51,10 +49,6 @@ public class ParentTooltip implements ClientTooltipComponent, Parent<ClientToolt
 
     public List<ClientTooltipComponent> getChildList() {
         return this.childTooltips;
-    }
-
-    public ClientTooltipComponent addChild(Component component) {
-        return addChild(new ClientTextTooltip(component.getVisualOrderText()));
     }
 
     public void setSpaceBefore(int gap) {
