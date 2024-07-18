@@ -16,10 +16,7 @@ import org.apache.commons.compress.utils.Lists;
 import team.durt.enchantmentinfo.category.ModEnchantmentCategory;
 import team.durt.enchantmentinfo.category.ModEnchantmentCategoryManager;
 import team.durt.enchantmentinfo.enchantment_data.EnchantmentDataManager;
-import team.durt.enchantmentinfo.gui.tooltip.EnchantmentNameTooltip;
-import team.durt.enchantmentinfo.gui.tooltip.ItemTooltip;
-import team.durt.enchantmentinfo.gui.tooltip.ParentTooltip;
-import team.durt.enchantmentinfo.gui.tooltip.SwitcherTooltip;
+import team.durt.enchantmentinfo.gui.tooltip.*;
 import team.durt.enchantmentinfo.gui.tooltip.line.GreenLineTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.line.RedLineTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.texture.EnchantmentCategoryTooltip;
@@ -96,12 +93,10 @@ public class TooltipBuilder {
         return new EnchantmentNameTooltip(enchantmentInstance);
     }
 
-    private static ClientTooltipComponent parseIncompatibleEnchantments(Enchantment enchantment) {
+    private static ParentTooltip parseIncompatibleEnchantments(Enchantment enchantment) {
         List<Enchantment> incompatibleEnchantments = enchantmentDataManager.getIncompatibleEnchantments(enchantment);
 
         if (incompatibleEnchantments.isEmpty()) return null;
-
-        ParentTooltip parent = new ParentTooltip(ParentTooltip.Orientation.HORIZONTAL, 2);
 
         ParentTooltip incompatiblesList = new ParentTooltip();
         for (Enchantment incompatibleEnchantment : incompatibleEnchantments) {
@@ -111,13 +106,11 @@ public class TooltipBuilder {
         }
 
         RedLineTooltip redLine = new RedLineTooltip(incompatiblesList.getHeight() - 3);
-        parent.addChild(redLine);
-        parent.addChild(incompatiblesList);
 
-        return parent;
+        return new LineGroupTooltip(redLine, incompatiblesList);
     }
 
-    private static ClientTooltipComponent parseEnchantableItems(Enchantment enchantment) {
+    private static ParentTooltip parseEnchantableItems(Enchantment enchantment) {
         List<ModEnchantmentCategory> categories = enchantmentDataManager.getEnchantmentCategories(enchantment);
         List<List<Item>> included = enchantmentDataManager.getIncludedItemGroups(enchantment);
         List<List<Item>> excluded = enchantmentDataManager.getExcludedItemGroups(enchantment);
@@ -135,13 +128,12 @@ public class TooltipBuilder {
         return parent;
     }
 
-    private static ParentTooltip parseCoolItems(List<ModEnchantmentCategory> categories, List<List<Item>> included) {
+    private static LineGroupTooltip parseCoolItems(List<ModEnchantmentCategory> categories, List<List<Item>> included) {
         ParentTooltip categoryTooltips = parseEnchantmentCategories(categories);
         ParentTooltip includedItemsTooltips = itemGroupsToTooltip(included);
 
         if (categoryTooltips == null && includedItemsTooltips == null) return null;
 
-        ParentTooltip parent = new ParentTooltip(ParentTooltip.Orientation.HORIZONTAL, 2);
         ParentTooltip categoriesAndItems = new ParentTooltip(ParentTooltip.Orientation.HORIZONTAL, 2);
 
         //add categories
@@ -151,25 +143,17 @@ public class TooltipBuilder {
 
         GreenLineTooltip greenLine = new GreenLineTooltip(categoriesAndItems.getHeight());
 
-        parent.addChild(greenLine);
-        parent.addChild(categoriesAndItems);
-
-        return parent;
+        return new LineGroupTooltip(greenLine, categoriesAndItems);
     }
 
-    private static ParentTooltip parseNotCoolItems(List<List<Item>> excluded) {
+    private static LineGroupTooltip parseNotCoolItems(List<List<Item>> excluded) {
         ParentTooltip excludedItemsTooltips = itemGroupsToTooltip(excluded);
 
         if (excludedItemsTooltips == null) return null;
 
-        ParentTooltip parent = new ParentTooltip(ParentTooltip.Orientation.HORIZONTAL, 2);
-
         RedLineTooltip redLine = new RedLineTooltip(excludedItemsTooltips.getHeight());
 
-        parent.addChild(redLine);
-        parent.addChild(excludedItemsTooltips);
-
-        return parent;
+        return new LineGroupTooltip(redLine, excludedItemsTooltips);
     }
 
     private static ParentTooltip parseEnchantmentCategories(List<ModEnchantmentCategory> categories) {

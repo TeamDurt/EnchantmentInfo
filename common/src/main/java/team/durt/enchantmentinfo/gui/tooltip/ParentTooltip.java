@@ -32,19 +32,20 @@ public class ParentTooltip implements ClientTooltipComponent, Parent<ClientToolt
     }
 
     public ParentTooltip(List<ClientTooltipComponent> childTooltips, Orientation orientation, int gap) {
-        setChildList(childTooltips);
+        this.childTooltips = childTooltips;
         this.orientation = orientation;
         this.gap = gap;
     }
 
-    public ClientTooltipComponent addChild(@Nullable ClientTooltipComponent tooltip) {
+    public ParentTooltip addChild(@Nullable ClientTooltipComponent tooltip) {
         if (tooltip == null) return this;
         this.childTooltips.add(tooltip);
         return this;
     }
 
-    public void setChildList(List<ClientTooltipComponent> childList) {
+    public ParentTooltip setChildList(List<ClientTooltipComponent> childList) {
         this.childTooltips = childList;
+        return this;
     }
 
     public List<ClientTooltipComponent> getChildList() {

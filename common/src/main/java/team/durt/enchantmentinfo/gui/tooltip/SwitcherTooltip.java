@@ -49,14 +49,15 @@ public class SwitcherTooltip implements ClientTooltipComponent, Parent<ClientToo
         return tooltips.get(currentTooltipIndex());
     }
 
-    public ClientTooltipComponent addChild(ClientTooltipComponent child) {
+    public SwitcherTooltip addChild(ClientTooltipComponent child) {
         if (child == null) return this;
         this.tooltips.add(child);
         return this;
     }
 
-    public void setChildList(List<ClientTooltipComponent> childList) {
+    public SwitcherTooltip setChildList(List<ClientTooltipComponent> childList) {
         this.tooltips = childList;
+        return this;
     }
 
     public List<ClientTooltipComponent> getChildList() {
