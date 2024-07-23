@@ -5,23 +5,30 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SwitcherTooltip implements ClientTooltipComponent, Parent<ClientTooltipComponent> {
     List<ClientTooltipComponent> tooltips;
     int interval;
+    static final int defaultInterval = 1000;
 
     public SwitcherTooltip() {
-        this(1000);
+        this(defaultInterval);
     }
 
     public SwitcherTooltip(int intervalMillis) {
         this(Lists.newArrayList(), intervalMillis);
     }
 
-    public SwitcherTooltip(List<ClientTooltipComponent> tooltips, int intervalMillis) {
-        setChildList(tooltips);
+    public SwitcherTooltip(List<? extends ClientTooltipComponent> tooltips) {
+        this(tooltips, defaultInterval);
+    }
+
+    public SwitcherTooltip(List<? extends ClientTooltipComponent> tooltips, int intervalMillis) {
+        this.tooltips = new ArrayList<>(tooltips);
         this.interval = intervalMillis;
     }
 
@@ -49,9 +56,8 @@ public class SwitcherTooltip implements ClientTooltipComponent, Parent<ClientToo
         return tooltips.get(currentTooltipIndex());
     }
 
-    public SwitcherTooltip addChild(ClientTooltipComponent child) {
-        if (child == null) return this;
-        this.tooltips.add(child);
+    public SwitcherTooltip addChild(@Nullable ClientTooltipComponent child) {
+        if (child != null) tooltips.add(child);
         return this;
     }
 

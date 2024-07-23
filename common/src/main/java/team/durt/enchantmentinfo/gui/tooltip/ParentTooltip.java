@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ParentTooltip implements ClientTooltipComponent, Parent<ClientTooltipComponent> {
@@ -31,8 +32,8 @@ public class ParentTooltip implements ClientTooltipComponent, Parent<ClientToolt
         this(Lists.newArrayList(), orientation, gap);
     }
 
-    public ParentTooltip(List<ClientTooltipComponent> childTooltips, Orientation orientation, int gap) {
-        this.childTooltips = childTooltips;
+    public ParentTooltip(List<? extends ClientTooltipComponent> childTooltips, Orientation orientation, int gap) {
+        this.childTooltips = new ArrayList<>(childTooltips);
         this.orientation = orientation;
         this.gap = gap;
     }
