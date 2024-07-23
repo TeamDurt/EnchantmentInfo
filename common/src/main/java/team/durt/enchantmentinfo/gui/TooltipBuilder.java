@@ -87,19 +87,15 @@ public class TooltipBuilder {
     private static ParentTooltip pairToTooltip(PairGroup pairGroup) {
         ParentTooltip parent = new ParentTooltip();
 
-        if (pairGroup.head instanceof HeadGroup headGroup) {
-            ParentTooltip headNames = parseHeadGroup(headGroup);
+        if (pairGroup.head instanceof HeadGroup group) {
+            ParentTooltip headNames = parseHeadGroup(group);
             parent.addChild(headNames);
-        } else if (pairGroup.head instanceof PairGroup pairGroup1) {
-            ParentTooltip pairHead = pairToTooltip(pairGroup1);
-            parent.addChild(new LineGroupTooltip(new BlueLineTooltip(pairHead.getHeight()), pairHead)); //under blue line
+        } else if (pairGroup.head instanceof PairGroup group) {
+            ParentTooltip headTooltip = pairToTooltip(group);
+            parent.addChild(new LineGroupTooltip(new BlueLineTooltip(headTooltip.getHeight()), headTooltip)); //under blue line
         }
 
-        ParentTooltip info = new ParentTooltip();
-
-        info.addChild(parseIncompatibleEnchantments(pairGroup.tail.getIncompatibleEnchantments()));
-        info.addChild(parseEnchantables(pairGroup.tail.getEnchantables()));
-
+        ParentTooltip info = pairGroup.tail.toTooltip();
         info.setSpaceAfter(2);
 
         if (!info.getChildList().isEmpty()) parent.addChild(info);
@@ -112,7 +108,7 @@ public class TooltipBuilder {
         return parseEnchantmentNamesList(headGroup.enchantments);
     }
 
-    private static LineGroupTooltip parseIncompatibleEnchantments(InfoGroup.IncompatibleEnchantments infoGroup) {
+    public static LineGroupTooltip parseIncompatibleEnchantments(InfoGroup.IncompatibleEnchantments infoGroup) {
         if (infoGroup == null) return null;
 
         List<EnchantmentInstance> instances = new ArrayList<>();
@@ -127,18 +123,13 @@ public class TooltipBuilder {
         return new LineGroupTooltip(redLine, incompatibleEnchantmentsList);
     }
 
-     private static ParentTooltip parseEnchantables(InfoGroup.Enchantables enchantables) {
+     public static ParentTooltip parseEnchantables(InfoGroup.Enchantables enchantables) {
         if (enchantables == null) return null;
 
-        InfoGroup.Categories categories = enchantables.getCategories();
-        InfoGroup.CompatibleItemGroups compatibleItemGroups = enchantables.getCompatibleItemGroups();
-        InfoGroup.IncompatibleItemGroups incompatibleItemGroups = enchantables.getIncompatibleItemGroups();
-
-        if (categories == null && compatibleItemGroups == null && incompatibleItemGroups == null) return null;
-
         ParentTooltip parent = new ParentTooltip(ParentTooltip.Orientation.VERTICAL, 2);
-        parent.addChild(parseCoolItems(categories, compatibleItemGroups));
-        parent.addChild(parseNotCoolItems(incompatibleItemGroups));
+        for (InfoGroup<?> group : enchantables.content) {
+            parent.addChild(group.toTooltip());
+        }
 
         return parent;
     }
@@ -147,13 +138,9 @@ public class TooltipBuilder {
         if (enchantmentInstances.isEmpty()) return null;
         List<EnchantmentNameTooltip> tooltips = new ArrayList<>();
         for (EnchantmentInstance instance : enchantmentInstances) {
-            tooltips.add(new EnchantmentNameTooltip(instance));
+            tooltips.add(parseEnchantmentName(instance));
         }
         return new ParentTooltip(tooltips, ParentTooltip.Orientation.VERTICAL, 0);
-    }
-
-    private static EnchantmentNameTooltip parseEnchantmentName(Enchantment enchantment) {
-        return new EnchantmentNameTooltip(enchantment);
     }
 
     private static EnchantmentNameTooltip parseEnchantmentName(EnchantmentInstance enchantmentInstance) {
@@ -161,45 +148,60 @@ public class TooltipBuilder {
     }
 
 
-    private static LineGroupTooltip parseCoolItems(InfoGroup.Categories categories, InfoGroup.CompatibleItemGroups compatibleItemGroups) {
-        if (categories == null && compatibleItemGroups == null) return null;
+    public static LineGroupTooltip parseCoolItems(InfoGroup.CoolItems coolItems) {
+        if (coolItems == null) return null;
 
         ParentTooltip parent = new ParentTooltip(ParentTooltip.Orientation.HORIZONTAL, 2);
-
-        parent.addChild(parseCategories(categories));
-        parent.addChild(parseItemGroups(compatibleItemGroups));
+        for (InfoGroup<?> group : coolItems.content) {
+            parent.addChild(group.toTooltip());
+        }
 
         GreenLineTooltip greenLine = new GreenLineTooltip(parent.getHeight());
         return new LineGroupTooltip(greenLine, parent);
     }
 
-    private static LineGroupTooltip parseNotCoolItems(InfoGroup.IncompatibleItemGroups incompatibleItemGroups) {
-        ParentTooltip itemGroupsTooltip = parseItemGroups(incompatibleItemGroups);
-        if (itemGroupsTooltip == null) return null;
-        RedLineTooltip redLine = new RedLineTooltip(itemGroupsTooltip.getHeight());
-        return new LineGroupTooltip(redLine, itemGroupsTooltip);
+    //todo ⬆ these are similar ⬇
+
+    public static LineGroupTooltip parseNotCoolItems(InfoGroup.NotCoolItems notCoolItems) {
+        if (notCoolItems == null) return null;
+
+        ParentTooltip parent = new ParentTooltip(ParentTooltip.Orientation.HORIZONTAL, 2);
+        for (InfoGroup<?> group : notCoolItems.content) {
+            parent.addChild(group.toTooltip());
+        }
+
+        RedLineTooltip redLine = new RedLineTooltip(parent.getHeight());
+        return new LineGroupTooltip(redLine, parent);
     }
 
-    private static ParentTooltip parseCategories(InfoGroup.Categories categories) {
+    public static ParentTooltip parseCategories(InfoGroup.Categories categories) {
         if (categories == null) return null;
+
         List<EnchantmentCategoryTooltip> tooltips = new ArrayList<>();
         for (ModEnchantmentCategory category : categories.content) {
             tooltips.add(new EnchantmentCategoryTooltip(category));
         }
+
         return new ParentTooltip(tooltips, ParentTooltip.Orientation.HORIZONTAL, 2);
     }
 
-    private static ParentTooltip parseItemGroups(InfoGroup<InfoGroup.Items> itemGroups) {
+    public static ParentTooltip parseItemGroups(InfoGroup<InfoGroup.Items> itemGroups) {
         if (itemGroups == null) return null;
+
         ParentTooltip parent = new ParentTooltip(ParentTooltip.Orientation.HORIZONTAL, 2);
         for (InfoGroup.Items items : itemGroups.content) {
-            SwitcherTooltip switcher = new SwitcherTooltip();
-            for (Item item : items.content) {
-                switcher.addChild(new ItemTooltip(item));
-            }
-            parent.addChild(switcher);
+            parent.addChild(items.toTooltip());
         }
+
         return parent;
+    }
+
+    public static SwitcherTooltip parseItemGroup(InfoGroup.Items items) {
+        SwitcherTooltip switcher = new SwitcherTooltip();
+        for (Item item : items.content) {
+            switcher.addChild(new ItemTooltip(item));
+        }
+        return switcher;
     }
 
     private static void addShiftMessage(List<Component> components, boolean shouldHold) {

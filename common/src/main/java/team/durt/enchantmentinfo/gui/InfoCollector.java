@@ -3,13 +3,9 @@ package team.durt.enchantmentinfo.gui;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
-import org.apache.commons.compress.utils.Lists;
 import team.durt.enchantmentinfo.category.ModEnchantmentCategory;
 import team.durt.enchantmentinfo.category.ModEnchantmentCategoryManager;
 import team.durt.enchantmentinfo.enchantment_data.EnchantmentDataManager;
-import team.durt.enchantmentinfo.gui.tooltip.EnchantmentNameTooltip;
-import team.durt.enchantmentinfo.gui.tooltip.ItemTooltip;
-import team.durt.enchantmentinfo.gui.tooltip.texture.EnchantmentCategoryTooltip;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +36,9 @@ public class InfoCollector {
         InfoGroup.Enchantables enchantables = parseEnchantableItems(enchantment);
         return new PairGroup(
                 new HeadGroup(enchantmentInstance),
-                new InfoGroup.All()
-                        .setIncompatibleEnchantments(incompatibleEnchantments)
-                        .setEnchantables(enchantables)
+                (InfoGroup.All) new InfoGroup.All() //todo cast = not cool
+                        .addChild(incompatibleEnchantments)
+                        .addChild(enchantables)
         );
     }
 
@@ -65,12 +61,23 @@ public class InfoCollector {
         InfoGroup.Enchantables group = new InfoGroup.Enchantables();
 
         //add allowed categories and items elements
-        group.setCategories(parseEnchantmentCategories(categories));
-        group.setCompatibleItemGroups((InfoGroup.CompatibleItemGroups) itemGroupsToTooltip(included, true));
+        group.addChild(parseCoolItems(categories, included));
         //add abandoned items from allowed categories
-        group.setIncompatibleItemGroups((InfoGroup.IncompatibleItemGroups) itemGroupsToTooltip(excluded, false));
+        group.addChild(parseNotCoolItems(excluded));
 
         return group;
+    }
+
+    private static InfoGroup.CoolItems parseCoolItems(List<ModEnchantmentCategory> categories, List<List<Item>> included) {
+        InfoGroup.CoolItems coolItems = new InfoGroup.CoolItems();
+        coolItems.addChild(parseEnchantmentCategories(categories));
+        coolItems.addChild(itemGroupsToInfoGroups(included));
+        return coolItems;
+    }
+
+    private static InfoGroup.NotCoolItems parseNotCoolItems(List<List<Item>> excluded) {
+        return (InfoGroup.NotCoolItems) new InfoGroup.NotCoolItems()
+                .addChild(itemGroupsToInfoGroups(excluded));
     }
 
     private static InfoGroup.Categories parseEnchantmentCategories(List<ModEnchantmentCategory> categories) {
@@ -90,13 +97,10 @@ public class InfoCollector {
         return content;
     }
 
-    private static InfoGroup<InfoGroup.Items> itemGroupsToTooltip(List<List<Item>> itemGroups, boolean compatible) {
+    private static InfoGroup.ItemGroups itemGroupsToInfoGroups(List<List<Item>> itemGroups) {
         if (itemGroups.isEmpty()) return null;
 
-        InfoGroup<InfoGroup.Items> content =
-                compatible ?
-                        new InfoGroup.CompatibleItemGroups() :
-                        new InfoGroup.IncompatibleItemGroups();
+        InfoGroup.ItemGroups content = new InfoGroup.ItemGroups();
         for (List<Item> itemGroup : itemGroups) {
             InfoGroup.Items items = new InfoGroup.Items();
             items.setChildList(itemGroup);
