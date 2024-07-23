@@ -13,6 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InfoCollector {
+    public static ArrayList<InfoParser> infoParsers = new ArrayList<>(List.of(
+            InfoCollector::parseIncompatibleEnchantments,
+            InfoCollector::parseEnchantableItems
+    ));
+
     static EnchantmentDataManager enchantmentDataManager = EnchantmentDataManager.getInstance();
     static ModEnchantmentCategoryManager enchantmentCategoryManager = ModEnchantmentCategoryManager.getInstance();
 
@@ -31,22 +36,21 @@ public class InfoCollector {
     }
 
     public static HeadGroup.PairGroup getGroupedInfo(EnchantmentInstance enchantmentInstance) {
-        Enchantment enchantment = enchantmentInstance.enchantment;
-
-        InfoGroup.IncompatibleEnchantments incompatibleEnchantments = parseIncompatibleEnchantments(enchantment);
-        InfoGroup.Enchantables enchantables = parseEnchantableItems(enchantment);
-
         HeadGroup.HeadEnchantmentsGroup headEnchantments = new HeadGroup.HeadEnchantmentsGroup(enchantmentInstance);
 
         InfoGroup.All info = new InfoGroup.All();
-        info.addChild(incompatibleEnchantments);
-        info.addChild(enchantables);
+        for (InfoParser parser : infoParsers) {
+            info.addChild(parser.parse(enchantmentInstance));
+        }
 
         return new HeadGroup.PairGroup(headEnchantments, info);
     }
 
-    private static InfoGroup.IncompatibleEnchantments parseIncompatibleEnchantments(Enchantment enchantment) {
-        List<Enchantment> incompatibleEnchantments = enchantmentDataManager.getIncompatibleEnchantments(enchantment);
+    private static InfoGroup.IncompatibleEnchantments parseIncompatibleEnchantments(
+            EnchantmentInstance enchantmentInstance
+    ) {
+        List<Enchantment> incompatibleEnchantments = enchantmentDataManager
+                .getIncompatibleEnchantments(enchantmentInstance.enchantment);
         if (incompatibleEnchantments.isEmpty()) return null;
 
         InfoGroup.IncompatibleEnchantments group = new InfoGroup.IncompatibleEnchantments();
@@ -55,7 +59,9 @@ public class InfoCollector {
         return group;
     }
 
-    private static InfoGroup.Enchantables parseEnchantableItems(Enchantment enchantment) {
+    private static InfoGroup.Enchantables parseEnchantableItems(EnchantmentInstance enchantmentInstance) {
+        Enchantment enchantment = enchantmentInstance.enchantment;
+
         List<ModEnchantmentCategory> categories = enchantmentDataManager.getEnchantmentCategories(enchantment);
         List<List<Item>> included = enchantmentDataManager.getIncludedItemGroups(enchantment);
         List<List<Item>> excluded = enchantmentDataManager.getExcludedItemGroups(enchantment);
@@ -110,5 +116,9 @@ public class InfoCollector {
             content.addChild(items);
         }
         return content;
+    }
+
+    public interface InfoParser {
+        InfoGroup<?> parse(EnchantmentInstance enchantmentInstance);
     }
 }
