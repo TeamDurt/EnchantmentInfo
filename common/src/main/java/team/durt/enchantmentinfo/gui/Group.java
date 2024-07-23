@@ -59,8 +59,6 @@ public class Group {
             return content;
         }
 
-        //todo make info groups scalable via optional parenting and etc
-
         public static class All extends InfoGroup<InfoGroup<?>> {
             @Override
             public ParentTooltip toTooltip() {
@@ -75,54 +73,49 @@ public class Group {
         public static class IncompatibleEnchantments extends InfoGroup<Enchantment> {
             @Override
             public LineGroupTooltip toTooltip() {
-                return TooltipBuilder.parseIncompatibleEnchantments(this);
+                return TooltipHelper.parseIncompatibleEnchantments(this);
             }
         }
 
         public static class Enchantables extends InfoGroup<InfoGroup<?>> {
             @Override
             public ParentTooltip toTooltip() {
-                return TooltipBuilder.parseEnchantables(this);
-//                ParentTooltip parent = new ParentTooltip();
-//                for (InfoGroup<?> group : content) {
-//                    parent.addChild(group.toTooltip());
-//                }
-//                return parent;
-            } //copy from All, todo simple ?
+                return TooltipHelper.parseEnchantables(this);
+            }
         }
 
         public static class CoolItems extends InfoGroup<InfoGroup<?>> {
             @Override
             public LineGroupTooltip toTooltip() {
-                return TooltipBuilder.parseCoolItems(this);
+                return TooltipHelper.parseCoolItems(this);
             }
         }
 
         public static class NotCoolItems extends InfoGroup<InfoGroup<?>> {
             @Override
             public LineGroupTooltip toTooltip() {
-                return TooltipBuilder.parseNotCoolItems(this);
+                return TooltipHelper.parseNotCoolItems(this);
             }
         }
 
         public static class Categories extends InfoGroup<ModEnchantmentCategory> {
             @Override
             public ParentTooltip toTooltip() {
-                return TooltipBuilder.parseCategories(this);
+                return TooltipHelper.parseCategories(this);
             }
         }
 
         public static class ItemGroups extends InfoGroup<InfoGroup.Items> {
             @Override
             public ParentTooltip toTooltip() {
-                return TooltipBuilder.parseItemGroups(this);
+                return TooltipHelper.parseItemGroups(this);
             }
         }
 
         public static class Items extends InfoGroup<Item> {
             @Override
             public SwitcherTooltip toTooltip() {
-                return TooltipBuilder.parseItemGroup(this);
+                return TooltipHelper.parseItemGroup(this);
             }
         }
 
