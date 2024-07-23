@@ -39,20 +39,11 @@ public class InfoCollector {
         InfoGroup.IncompatibleEnchantments incompatibleEnchantments = parseIncompatibleEnchantments(enchantment);
         InfoGroup.Enchantables enchantables = parseEnchantableItems(enchantment);
         return new PairGroup(
-                new HeadGroup(parseEnchantmentName(enchantmentInstance)),
+                new HeadGroup(enchantmentInstance),
                 new InfoGroup.All()
                         .setIncompatibleEnchantments(incompatibleEnchantments)
                         .setEnchantables(enchantables)
         );
-    }
-
-
-    private static EnchantmentNameTooltip parseEnchantmentName(Enchantment enchantment) {
-        return new EnchantmentNameTooltip(enchantment);
-    }
-
-    private static EnchantmentNameTooltip parseEnchantmentName(EnchantmentInstance enchantmentInstance) {
-        return new EnchantmentNameTooltip(enchantmentInstance);
     }
 
     private static InfoGroup.IncompatibleEnchantments parseIncompatibleEnchantments(Enchantment enchantment) {
@@ -60,12 +51,7 @@ public class InfoCollector {
         if (incompatibleEnchantments.isEmpty()) return null;
 
         InfoGroup.IncompatibleEnchantments group = new InfoGroup.IncompatibleEnchantments();
-
-        for (Enchantment incompatibleEnchantment : incompatibleEnchantments) {
-            group.addChild(
-                    parseEnchantmentName(incompatibleEnchantment)
-            );
-        }
+        group.setChildList(incompatibleEnchantments);
 
         return group;
     }
@@ -94,14 +80,12 @@ public class InfoCollector {
 
         ModEnchantmentCategory breakable = enchantmentCategoryManager.getCategory("breakable");
         if (categories.contains(breakable)) {
-            content.addChild(new EnchantmentCategoryTooltip(breakable));
+            content.addChild(breakable);
             return content;
             //skipping anything else, breakable basically matches any other category
         }
 
-        for (ModEnchantmentCategory category : categories) {
-            content.addChild(new EnchantmentCategoryTooltip(category));
-        }
+        content.setChildList(categories);
 
         return content;
     }
@@ -115,9 +99,7 @@ public class InfoCollector {
                         new InfoGroup.IncompatibleItemGroups();
         for (List<Item> itemGroup : itemGroups) {
             InfoGroup.Items items = new InfoGroup.Items();
-            for (Item item : itemGroup) {
-                items.addChild(new ItemTooltip(item));
-            }
+            items.setChildList(itemGroup);
             content.addChild(items);
         }
         return content;

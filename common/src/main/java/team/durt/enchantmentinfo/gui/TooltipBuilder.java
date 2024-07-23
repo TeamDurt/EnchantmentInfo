@@ -7,21 +7,23 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import org.apache.commons.compress.utils.Lists;
+import team.durt.enchantmentinfo.category.ModEnchantmentCategory;
 import team.durt.enchantmentinfo.gui.Group.HeadGroup;
 import team.durt.enchantmentinfo.gui.Group.InfoGroup;
 import team.durt.enchantmentinfo.gui.Group.PairGroup;
-import team.durt.enchantmentinfo.gui.tooltip.EnchantmentNameTooltip;
-import team.durt.enchantmentinfo.gui.tooltip.LineGroupTooltip;
-import team.durt.enchantmentinfo.gui.tooltip.ParentTooltip;
-import team.durt.enchantmentinfo.gui.tooltip.SwitcherTooltip;
+import team.durt.enchantmentinfo.gui.tooltip.*;
 import team.durt.enchantmentinfo.gui.tooltip.line.BlueLineTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.line.GreenLineTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.line.RedLineTooltip;
+import team.durt.enchantmentinfo.gui.tooltip.texture.EnchantmentCategoryTooltip;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TooltipBuilder {
@@ -112,8 +114,15 @@ public class TooltipBuilder {
 
     private static LineGroupTooltip parseIncompatibleEnchantments(InfoGroup.IncompatibleEnchantments infoGroup) {
         if (infoGroup == null) return null;
-        ParentTooltip incompatibleEnchantmentsList = parseEnchantmentNamesList(infoGroup.content);
+
+        List<EnchantmentInstance> instances = new ArrayList<>();
+        for (Enchantment enchantment : infoGroup.content) {
+            instances.add(new EnchantmentInstance(enchantment, 0));
+        }
+
+        ParentTooltip incompatibleEnchantmentsList = parseEnchantmentNamesList(instances);
         if (incompatibleEnchantmentsList == null) return null;
+
         RedLineTooltip redLine = new RedLineTooltip(incompatibleEnchantmentsList.getHeight() - 2);
         return new LineGroupTooltip(redLine, incompatibleEnchantmentsList);
     }
@@ -134,10 +143,23 @@ public class TooltipBuilder {
         return parent;
     }
 
-    private static ParentTooltip parseEnchantmentNamesList(List<EnchantmentNameTooltip> enchantmentNameTooltips) {
-        if (enchantmentNameTooltips.isEmpty()) return null;
-        return new ParentTooltip(enchantmentNameTooltips, ParentTooltip.Orientation.VERTICAL, 0);
+    private static ParentTooltip parseEnchantmentNamesList(List<EnchantmentInstance> enchantmentInstances) {
+        if (enchantmentInstances.isEmpty()) return null;
+        List<EnchantmentNameTooltip> tooltips = new ArrayList<>();
+        for (EnchantmentInstance instance : enchantmentInstances) {
+            tooltips.add(new EnchantmentNameTooltip(instance));
+        }
+        return new ParentTooltip(tooltips, ParentTooltip.Orientation.VERTICAL, 0);
     }
+
+    private static EnchantmentNameTooltip parseEnchantmentName(Enchantment enchantment) {
+        return new EnchantmentNameTooltip(enchantment);
+    }
+
+    private static EnchantmentNameTooltip parseEnchantmentName(EnchantmentInstance enchantmentInstance) {
+        return new EnchantmentNameTooltip(enchantmentInstance);
+    }
+
 
     private static LineGroupTooltip parseCoolItems(InfoGroup.Categories categories, InfoGroup.CompatibleItemGroups compatibleItemGroups) {
         if (categories == null && compatibleItemGroups == null) return null;
@@ -160,14 +182,21 @@ public class TooltipBuilder {
 
     private static ParentTooltip parseCategories(InfoGroup.Categories categories) {
         if (categories == null) return null;
-        return new ParentTooltip(categories.content, ParentTooltip.Orientation.HORIZONTAL, 2);
+        List<EnchantmentCategoryTooltip> tooltips = new ArrayList<>();
+        for (ModEnchantmentCategory category : categories.content) {
+            tooltips.add(new EnchantmentCategoryTooltip(category));
+        }
+        return new ParentTooltip(tooltips, ParentTooltip.Orientation.HORIZONTAL, 2);
     }
 
     private static ParentTooltip parseItemGroups(InfoGroup<InfoGroup.Items> itemGroups) {
         if (itemGroups == null) return null;
         ParentTooltip parent = new ParentTooltip(ParentTooltip.Orientation.HORIZONTAL, 2);
         for (InfoGroup.Items items : itemGroups.content) {
-            SwitcherTooltip switcher = new SwitcherTooltip(items.content);
+            SwitcherTooltip switcher = new SwitcherTooltip();
+            for (Item item : items.content) {
+                switcher.addChild(new ItemTooltip(item));
+            }
             parent.addChild(switcher);
         }
         return parent;

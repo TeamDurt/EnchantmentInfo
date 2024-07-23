@@ -1,5 +1,9 @@
 package team.durt.enchantmentinfo.gui;
 
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
+import team.durt.enchantmentinfo.category.ModEnchantmentCategory;
 import team.durt.enchantmentinfo.gui.tooltip.EnchantmentNameTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.ItemTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.Parent;
@@ -21,9 +25,9 @@ public class Group {
     }
 
     public static class HeadGroup extends Group {
-        List<EnchantmentNameTooltip> enchantments;
+        List<EnchantmentInstance> enchantments;
 
-        public HeadGroup(EnchantmentNameTooltip... enchantments) {
+        public HeadGroup(EnchantmentInstance... enchantments) {
             super(GroupType.HEAD);
             this.enchantments = List.of(enchantments);
         }
@@ -111,15 +115,10 @@ public class Group {
             }
         }
 
-        public static class IncompatibleEnchantments extends InfoGroup<EnchantmentNameTooltip> {
+        public static class IncompatibleEnchantments extends InfoGroup<Enchantment> {
 
             public IncompatibleEnchantments() {
                 super(Type.INCOMPATIBLE_ENCHANTMENTS);
-            }
-
-            @Override //todo cast everywhere ?
-            public IncompatibleEnchantments setChildList(List<EnchantmentNameTooltip> childList) {
-                return (IncompatibleEnchantments) super.setChildList(childList);
             }
         }
 
@@ -171,7 +170,7 @@ public class Group {
             }
         }
 
-        public static class Categories extends InfoGroup<EnchantmentCategoryTooltip> {
+        public static class Categories extends InfoGroup<ModEnchantmentCategory> {
 
             public Categories() {
                 super(Type.CATEGORIES);
@@ -192,7 +191,7 @@ public class Group {
             }
         }
 
-        public static class Items extends InfoGroup<ItemTooltip> {
+        public static class Items extends InfoGroup<Item> {
 
             public Items() {
                 super(Type.ITEMS);
