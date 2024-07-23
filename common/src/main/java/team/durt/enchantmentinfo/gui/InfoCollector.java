@@ -6,40 +6,43 @@ import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import team.durt.enchantmentinfo.category.ModEnchantmentCategory;
 import team.durt.enchantmentinfo.category.ModEnchantmentCategoryManager;
 import team.durt.enchantmentinfo.enchantment_data.EnchantmentDataManager;
+import team.durt.enchantmentinfo.gui.group.HeadGroup;
+import team.durt.enchantmentinfo.gui.group.InfoGroup;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static team.durt.enchantmentinfo.gui.Group.*;
 
 public class InfoCollector {
     static EnchantmentDataManager enchantmentDataManager = EnchantmentDataManager.getInstance();
     static ModEnchantmentCategoryManager enchantmentCategoryManager = ModEnchantmentCategoryManager.getInstance();
 
-    public static List<PairGroup> simplify(List<PairGroup> groups) {
+    public static List<HeadGroup.PairGroup> simplify(List<HeadGroup.PairGroup> groups) {
         //todo grouping logic here
 
         return groups;
     }
 
-    public static List<PairGroup> getGroupedInfo(List<EnchantmentInstance> enchantmentInstanceList) {
-        List<PairGroup> groups = new ArrayList<>();
+    public static List<HeadGroup.PairGroup> getGroupedInfo(List<EnchantmentInstance> enchantmentInstanceList) {
+        List<HeadGroup.PairGroup> groups = new ArrayList<>();
         for (EnchantmentInstance enchantmentInstance : enchantmentInstanceList) {
             groups.add(getGroupedInfo(enchantmentInstance));
         }
         return groups;
     }
 
-    public static PairGroup getGroupedInfo(EnchantmentInstance enchantmentInstance) {
+    public static HeadGroup.PairGroup getGroupedInfo(EnchantmentInstance enchantmentInstance) {
         Enchantment enchantment = enchantmentInstance.enchantment;
+
         InfoGroup.IncompatibleEnchantments incompatibleEnchantments = parseIncompatibleEnchantments(enchantment);
         InfoGroup.Enchantables enchantables = parseEnchantableItems(enchantment);
-        return new PairGroup(
-                new HeadGroup(enchantmentInstance),
-                (InfoGroup.All) new InfoGroup.All() //todo cast = not cool
-                        .addChild(incompatibleEnchantments)
-                        .addChild(enchantables)
-        );
+
+        HeadGroup.HeadEnchantmentsGroup headEnchantments = new HeadGroup.HeadEnchantmentsGroup(enchantmentInstance);
+
+        InfoGroup.All info = new InfoGroup.All();
+        info.addChild(incompatibleEnchantments);
+        info.addChild(enchantables);
+
+        return new HeadGroup.PairGroup(headEnchantments, info);
     }
 
     private static InfoGroup.IncompatibleEnchantments parseIncompatibleEnchantments(Enchantment enchantment) {

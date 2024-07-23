@@ -8,6 +8,7 @@ import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
+import team.durt.enchantmentinfo.gui.Parent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,16 @@ public class ParentTooltip implements ClientTooltipComponent, Parent<ClientToolt
         this.childTooltips = new ArrayList<>(childTooltips);
         this.orientation = orientation;
         this.gap = gap;
+    }
+
+    public ParentTooltip setOrientation(Orientation orientation) {
+        this.orientation = orientation;
+        return this;
+    }
+
+    public ParentTooltip setGap(int gap) {
+        this.gap = gap;
+        return this;
     }
 
     public ParentTooltip addChild(@Nullable ClientTooltipComponent tooltip) {

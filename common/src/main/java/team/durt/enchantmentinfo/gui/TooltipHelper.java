@@ -4,8 +4,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import team.durt.enchantmentinfo.category.ModEnchantmentCategory;
-import team.durt.enchantmentinfo.gui.Group.InfoGroup;
+import team.durt.enchantmentinfo.gui.group.HeadGroup;
+import team.durt.enchantmentinfo.gui.group.InfoGroup;
 import team.durt.enchantmentinfo.gui.tooltip.*;
+import team.durt.enchantmentinfo.gui.tooltip.line.ColoredLineTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.line.GreenLineTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.line.RedLineTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.texture.EnchantmentCategoryTooltip;
@@ -18,7 +20,7 @@ public class TooltipHelper {
         if (infoGroup == null) return null;
 
         List<EnchantmentInstance> instances = new ArrayList<>();
-        for (Enchantment enchantment : infoGroup.content) {
+        for (Enchantment enchantment : infoGroup.getChildList()) {
             instances.add(new EnchantmentInstance(enchantment, 0));
         }
 
@@ -32,21 +34,18 @@ public class TooltipHelper {
     public static ParentTooltip parseEnchantables(InfoGroup.Enchantables enchantables) {
         if (enchantables == null) return null;
 
-        ParentTooltip parent = new ParentTooltip(ParentTooltip.Orientation.VERTICAL, 2);
-        for (InfoGroup<?> group : enchantables.content) {
-            parent.addChild(group.toTooltip());
-        }
-
-        return parent;
+        return collectChildTooltips(enchantables).setGap(2);
     }
 
     public static ParentTooltip parseEnchantmentNamesList(List<EnchantmentInstance> enchantmentInstances) {
         if (enchantmentInstances.isEmpty()) return null;
-        List<EnchantmentNameTooltip> tooltips = new ArrayList<>();
+
+        ParentTooltip parent = new ParentTooltip();
         for (EnchantmentInstance instance : enchantmentInstances) {
-            tooltips.add(parseEnchantmentName(instance));
+            parent.addChild(parseEnchantmentName(instance));
         }
-        return new ParentTooltip(tooltips, ParentTooltip.Orientation.VERTICAL, 0);
+
+        return parent;
     }
 
     private static EnchantmentNameTooltip parseEnchantmentName(EnchantmentInstance enchantmentInstance) {
@@ -54,36 +53,33 @@ public class TooltipHelper {
     }
 
     public static LineGroupTooltip parseCoolItems(InfoGroup.CoolItems coolItems) {
-        if (coolItems == null) return null;
-
-        ParentTooltip parent = new ParentTooltip(ParentTooltip.Orientation.HORIZONTAL, 2);
-        for (InfoGroup<?> group : coolItems.content) {
-            parent.addChild(group.toTooltip());
-        }
-
-        GreenLineTooltip greenLine = new GreenLineTooltip(parent.getHeight());
-        return new LineGroupTooltip(greenLine, parent);
+        return parseItemsDefinition(coolItems, true);
     }
 
-    //todo ⬆ these are similar ⬇
-
     public static LineGroupTooltip parseNotCoolItems(InfoGroup.NotCoolItems notCoolItems) {
-        if (notCoolItems == null) return null;
+        return parseItemsDefinition(notCoolItems, false);
+    }
 
-        ParentTooltip parent = new ParentTooltip(ParentTooltip.Orientation.HORIZONTAL, 2);
-        for (InfoGroup<?> group : notCoolItems.content) {
-            parent.addChild(group.toTooltip());
-        }
+    public static LineGroupTooltip parseItemsDefinition(InfoGroup<? extends InfoGroup<?>> definitionGroup, boolean allowed) {
+        if (definitionGroup == null) return null;
 
-        RedLineTooltip redLine = new RedLineTooltip(parent.getHeight());
-        return new LineGroupTooltip(redLine, parent);
+        ParentTooltip parent = collectChildTooltips(definitionGroup)
+                .setOrientation(ParentTooltip.Orientation.HORIZONTAL)
+                .setGap(2);
+
+        int height = parent.getHeight();
+        ColoredLineTooltip coloredLine = allowed ?
+                new GreenLineTooltip(height) :
+                new RedLineTooltip(height);
+
+        return new LineGroupTooltip(coloredLine, parent);
     }
 
     public static ParentTooltip parseCategories(InfoGroup.Categories categories) {
         if (categories == null) return null;
 
         List<EnchantmentCategoryTooltip> tooltips = new ArrayList<>();
-        for (ModEnchantmentCategory category : categories.content) {
+        for (ModEnchantmentCategory category : categories.getChildList()) {
             tooltips.add(new EnchantmentCategoryTooltip(category));
         }
 
@@ -93,19 +89,28 @@ public class TooltipHelper {
     public static ParentTooltip parseItemGroups(InfoGroup<InfoGroup.Items> itemGroups) {
         if (itemGroups == null) return null;
 
-        ParentTooltip parent = new ParentTooltip(ParentTooltip.Orientation.HORIZONTAL, 2);
-        for (InfoGroup.Items items : itemGroups.content) {
-            parent.addChild(items.toTooltip());
-        }
-
-        return parent;
+        return collectChildTooltips(itemGroups)
+                .setOrientation(ParentTooltip.Orientation.HORIZONTAL)
+                .setGap(2);
     }
 
     public static SwitcherTooltip parseItemGroup(InfoGroup.Items items) {
         SwitcherTooltip switcher = new SwitcherTooltip();
-        for (Item item : items.content) {
+        for (Item item : items.getChildList()) {
             switcher.addChild(new ItemTooltip(item));
         }
         return switcher;
+    }
+
+    public static ParentTooltip collectChildTooltips(InfoGroup<? extends InfoGroup<?>> infoGroup) {
+        ParentTooltip parent = new ParentTooltip();
+        for (InfoGroup<?> group : infoGroup.getChildList()) {
+            parent.addChild(group.toTooltip());
+        }
+        return parent;
+    }
+
+    public static ParentTooltip parseHeadEnchantmentsGroup(HeadGroup.HeadEnchantmentsGroup headEnchantmentsGroup) {
+        return parseEnchantmentNamesList(headEnchantmentsGroup.getEnchantments());
     }
 }

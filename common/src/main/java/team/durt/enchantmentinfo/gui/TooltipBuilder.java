@@ -11,9 +11,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import org.apache.commons.compress.utils.Lists;
-import team.durt.enchantmentinfo.gui.Group.HeadGroup;
-import team.durt.enchantmentinfo.gui.Group.PairGroup;
-import team.durt.enchantmentinfo.gui.tooltip.*;
+import team.durt.enchantmentinfo.gui.group.HeadGroup.PairGroup;
+import team.durt.enchantmentinfo.gui.group.InfoGroup;
+import team.durt.enchantmentinfo.gui.tooltip.LineGroupTooltip;
+import team.durt.enchantmentinfo.gui.tooltip.ParentTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.line.BlueLineTooltip;
 
 import java.util.List;
@@ -76,28 +77,28 @@ public class TooltipBuilder {
         return tooltips;
     }
 
-    private static ParentTooltip pairToTooltip(PairGroup pairGroup) {
+    public static ParentTooltip pairToTooltip(PairGroup pairGroup) {
         ParentTooltip parent = new ParentTooltip();
 
-        if (pairGroup.head instanceof HeadGroup group) {
-            ParentTooltip headNames = parseHeadGroup(group);
-            parent.addChild(headNames);
-        } else if (pairGroup.head instanceof PairGroup group) {
-            ParentTooltip headTooltip = pairToTooltip(group);
-            parent.addChild(new LineGroupTooltip(new BlueLineTooltip(headTooltip.getHeight()), headTooltip)); //under blue line
+        if (pairGroup.getHead() instanceof PairGroup group) {
+            ParentTooltip headTooltip = group.toTooltip();
+            parent.addChild(
+                    new LineGroupTooltip(
+                            new BlueLineTooltip(headTooltip.getHeight()),
+                            headTooltip
+                    )
+            ); //under blue line
+        } else {
+            parent.addChild(pairGroup.getHead().toTooltip());
         }
 
-        ParentTooltip info = pairGroup.tail.toTooltip();
+        ParentTooltip info = pairGroup.getTail().toTooltip();
         info.setSpaceAfter(2);
 
         if (!info.getChildList().isEmpty()) parent.addChild(info);
 
         //todo return null ?
         return parent;
-    }
-
-    private static ParentTooltip parseHeadGroup(HeadGroup headGroup) {
-        return TooltipHelper.parseEnchantmentNamesList(headGroup.enchantments);
     }
 
     private static void addShiftMessage(List<Component> components, boolean shouldHold) {
