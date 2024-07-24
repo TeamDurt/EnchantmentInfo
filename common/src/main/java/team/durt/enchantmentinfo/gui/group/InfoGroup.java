@@ -12,6 +12,12 @@ import team.durt.enchantmentinfo.gui.tooltip.SwitcherTooltip;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class is used to store information for further transformation to tooltips.
+ *
+ * @see InfoHolder#toTooltip()
+ * @see team.durt.enchantmentinfo.gui.InfoCollector#getInfo(List)
+ */
 public abstract class InfoGroup<T> implements Parent<T>, InfoHolder {
     List<T> content = new ArrayList<>();
 

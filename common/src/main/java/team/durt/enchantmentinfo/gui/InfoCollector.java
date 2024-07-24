@@ -14,6 +14,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class InfoCollector {
+    /**
+     * This List used to be called in {@link #getRawInfo(List)}.
+     * It contains {@link InfoParser InfoParsers} with single method {@link InfoParser#parse(EnchantmentInstance)}
+     * that is called for every entry in for loop
+     *
+     * @see #getRawInfo(EnchantmentInstance)
+     * @see InfoParser
+     */
     public static ArrayList<InfoParser> infoParsers = new ArrayList<>(List.of(
             InfoCollector::parseIncompatibleEnchantments,
             InfoCollector::parseEnchantableItems
@@ -22,10 +30,26 @@ public class InfoCollector {
     static EnchantmentDataManager enchantmentDataManager = EnchantmentDataManager.getInstance();
     static ModEnchantmentCategoryManager enchantmentCategoryManager = ModEnchantmentCategoryManager.getInstance();
 
+    /**
+     * Returns List of {@link HeadGroup.PairGroup} in simple form where all similar {@link InfoGroup info} combined.
+     *
+     * @see HeadGroup.PairGroup
+     * @see InfoGroup
+     * @see #getRawInfo(EnchantmentInstance)
+     * @see #simplify(List)
+     */
     public static List<HeadGroup.PairGroup> getInfo(List<EnchantmentInstance> enchantmentInstanceList) {
         return simplify(getRawInfo(enchantmentInstanceList));
     }
 
+    /**
+     * Takes List of Raw {@link HeadGroup.PairGroup Pair Groups}
+     * and combines all similar {@link InfoGroup Info} together so result looks more simple
+     *
+     * @see #getRawInfo(EnchantmentInstance)
+     * @see HeadGroup.PairGroup
+     * @see InfoGroup
+     */
     public static List<HeadGroup.PairGroup> simplify(List<HeadGroup.PairGroup> groups) {
         //todo grouping logic here
 
@@ -39,6 +63,17 @@ public class InfoCollector {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * This method returns one {@link HeadGroup.PairGroup} for given {@link EnchantmentInstance}.
+     * Raw Info basically means that returned {@link HeadGroup.PairGroup} is simplest {@link HeadGroup.PairGroup}
+     * that can be gotten from this {@link EnchantmentInstance}, It only contains single Enchantment as {@link HeadGroup.HeadEnchantmentsGroup Head} and
+     * all {@link InfoGroup.All Info} for given {@link EnchantmentInstance}.
+     *
+     * @see HeadGroup.PairGroup
+     * @see HeadGroup.HeadEnchantmentsGroup
+     * @see InfoGroup
+     * @see #simplify(List)
+     */
     public static HeadGroup.PairGroup getRawInfo(EnchantmentInstance enchantmentInstance) {
         HeadGroup.HeadEnchantmentsGroup headEnchantments = new HeadGroup.HeadEnchantmentsGroup(enchantmentInstance);
 
@@ -74,9 +109,9 @@ public class InfoCollector {
 
         InfoGroup.Enchantables group = new InfoGroup.Enchantables();
 
-        //add allowed categories and items elements
+        // add allowed categories and items
         group.addChild(parseCoolItems(categories, included));
-        //add abandoned items from allowed categories
+        // add abandoned items from allowed categories
         group.addChild(parseNotCoolItems(excluded));
 
         return group;
@@ -103,7 +138,7 @@ public class InfoCollector {
         if (categories.contains(breakable)) {
             content.addChild(breakable);
             return content;
-            //skipping anything else, breakable basically matches any other category
+            // skipping anything else, breakable basically matches any other category
         }
 
         content.setChildList(categories);
@@ -123,6 +158,17 @@ public class InfoCollector {
         return content;
     }
 
+    /**
+     * This Interface is used to be added in {@link #infoParsers} list.
+     * A single method {@link #parse(EnchantmentInstance)} is called from all parsers in {@link #getRawInfo(EnchantmentInstance)}.
+     * The {@link #parse(EnchantmentInstance)} method takes {@link EnchantmentInstance} which is one of enchantments Enchanted Book have,
+     * and returns {@link InfoGroup} that is later added to one {@link InfoGroup.All}.
+     *
+     * @see #infoParsers
+     * @see #getRawInfo(EnchantmentInstance)
+     * @see #getRawInfo(List)
+     * @see InfoGroup
+     */
     public interface InfoParser {
         InfoGroup<?> parse(EnchantmentInstance enchantmentInstance);
     }

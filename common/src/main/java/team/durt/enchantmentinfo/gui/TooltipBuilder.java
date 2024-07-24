@@ -16,30 +16,37 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TooltipBuilder {
+    /**
+     * Takes List of Components and adds {@link net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent Tooltips} to it
+     * that are represents information about Enchantments in given {@link ListTag}
+     *
+     * @see team.durt.enchantmentinfo.mixin.EnchantedBookItemMixin
+     * @see FakeComponent
+     */
     public static void build(List<Component> components, ListTag enchantmentTags) {
         boolean shiftPressed = Screen.hasShiftDown();
 
         if (shiftPressed) {
-            //custom tooltips
+            // custom tooltips
             addCustomTooltips(components, enchantmentTags);
         } else {
-            //default enchantment names
+            // default enchantment names
             ItemStack.appendEnchantmentNames(components, enchantmentTags);
         }
 
-        //hold or release shift message
+        // hold or release shift message
         TooltipHelper.addShiftMessage(components, !shiftPressed);
     }
 
     private static void addCustomTooltips(List<Component> components, ListTag enchantmentTags) {
         List<EnchantmentInstance> enchantments = getEnchantmentsFromTag(enchantmentTags);
 
-        //collecting info grouped by similar parts //todo (placeholder, not done yet)
+        // collecting info grouped by similar parts //todo (placeholder, not done yet)
         List<PairGroup> info = InfoCollector.getInfo(enchantments);
-        //transforming all info to tooltip components
+        // transforming all info to tooltip components
         List<ParentTooltip> tooltips = infoToTooltips(info);
 
-        //adding tooltips to components list using FakeComponent as tooltip holder, so it matches the list type
+        // adding tooltips to components list using FakeComponent as tooltip holder, so it matches the list type
         components.addAll(FakeComponent.tooltipsToComponents(tooltips));
     }
 

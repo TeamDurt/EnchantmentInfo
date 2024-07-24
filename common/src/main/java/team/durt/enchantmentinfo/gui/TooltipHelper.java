@@ -35,13 +35,13 @@ public class TooltipHelper {
         ParentTooltip parent = new ParentTooltip();
 
         if (pairGroup.getHead() instanceof HeadGroup.PairGroup group) {
-            ParentTooltip headTooltip = group.toTooltip();
+            ParentTooltip headTooltip = group.toTooltip(); // recursion here
             parent.addChild(
                     new LineGroupTooltip(
                             new BlueLineTooltip(headTooltip.getHeight()),
                             headTooltip
                     )
-            ); //under blue line
+            ); // under blue line
         } else {
             parent.addChild(pairGroup.getHead().toTooltip());
         }
@@ -51,7 +51,6 @@ public class TooltipHelper {
 
         if (!info.getChildList().isEmpty()) parent.addChild(info);
 
-        //todo return null ?
         return parent;
     }
 
