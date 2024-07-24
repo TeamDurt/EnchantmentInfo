@@ -60,7 +60,7 @@ public class FakeComponent implements Component {
         }
     }
 
-    public static List<FakeComponent> tooltipsToComponents(List<ClientTooltipComponent> tooltipComponents) {
+    public static List<FakeComponent> tooltipsToComponents(List<? extends ClientTooltipComponent> tooltipComponents) {
         List<FakeComponent> fakeComponents = Lists.newArrayList();
         for (ClientTooltipComponent tooltipComponent : tooltipComponents) {
             fakeComponents.add(new FakeComponent(tooltipComponent));

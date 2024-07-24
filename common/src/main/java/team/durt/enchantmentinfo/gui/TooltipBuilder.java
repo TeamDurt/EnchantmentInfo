@@ -1,8 +1,6 @@
 package team.durt.enchantmentinfo.gui;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -12,32 +10,12 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import org.apache.commons.compress.utils.Lists;
 import team.durt.enchantmentinfo.gui.group.HeadGroup.PairGroup;
-import team.durt.enchantmentinfo.gui.group.InfoGroup;
-import team.durt.enchantmentinfo.gui.tooltip.LineGroupTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.ParentTooltip;
-import team.durt.enchantmentinfo.gui.tooltip.line.BlueLineTooltip;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TooltipBuilder {
-
-    private static final Component shiftKeyComponent = Component
-            .literal("Shift")
-            .withStyle(ChatFormatting.GRAY);
-
-    private static final Component holdShiftComponent = Component
-            .translatable(
-                    "enchantmentinfo.holdShift",
-                    shiftKeyComponent
-            ).withStyle(ChatFormatting.DARK_GRAY);
-
-    private static final Component releaseShiftComponent = Component
-            .translatable(
-                    "enchantmentinfo.releaseShift",
-                    shiftKeyComponent
-            ).withStyle(ChatFormatting.DARK_GRAY);
-
-
     public static void build(List<Component> components, ListTag enchantmentTags) {
         boolean shiftPressed = Screen.hasShiftDown();
 
@@ -50,71 +28,26 @@ public class TooltipBuilder {
         }
 
         //hold or release shift message
-        addShiftMessage(components, !shiftPressed);
+        TooltipHelper.addShiftMessage(components, !shiftPressed);
     }
 
     private static void addCustomTooltips(List<Component> components, ListTag enchantmentTags) {
         List<EnchantmentInstance> enchantments = getEnchantmentsFromTag(enchantmentTags);
 
-        //collecting raw info about enchantments in form enchantment-info groups
-        List<PairGroup> pairGroups = InfoCollector.getGroupedInfo(enchantments);
-        //grouping similar entries to make all info simpler (placeholder, not done yet)
-        List<PairGroup> simplifiedGroups = InfoCollector.simplify(pairGroups);
+        //collecting info grouped by similar parts //todo (placeholder, not done yet)
+        List<PairGroup> info = InfoCollector.getInfo(enchantments);
         //transforming all info to tooltip components
-        List<ClientTooltipComponent> tooltips = pairsToTooltips(simplifiedGroups);
+        List<ParentTooltip> tooltips = infoToTooltips(info);
 
         //adding tooltips to components list using FakeComponent as tooltip holder, so it matches the list type
         components.addAll(FakeComponent.tooltipsToComponents(tooltips));
     }
 
-    private static List<ClientTooltipComponent> pairsToTooltips(List<PairGroup> pairGroups) {
-        List<ClientTooltipComponent> tooltips = Lists.newArrayList();
-
-        for (PairGroup pairGroup : pairGroups) {
-            tooltips.add(pairToTooltip(pairGroup));
-        }
-
-        return tooltips;
-    }
-
-    public static ParentTooltip pairToTooltip(PairGroup pairGroup) {
-        ParentTooltip parent = new ParentTooltip();
-
-        if (pairGroup.getHead() instanceof PairGroup group) {
-            ParentTooltip headTooltip = group.toTooltip();
-            parent.addChild(
-                    new LineGroupTooltip(
-                            new BlueLineTooltip(headTooltip.getHeight()),
-                            headTooltip
-                    )
-            ); //under blue line
-        } else {
-            parent.addChild(pairGroup.getHead().toTooltip());
-        }
-
-        ParentTooltip info = pairGroup.getTail().toTooltip();
-        info.setSpaceAfter(2);
-
-        if (!info.getChildList().isEmpty()) parent.addChild(info);
-
-        //todo return null ?
-        return parent;
-    }
-
-    private static void addShiftMessage(List<Component> components, boolean shouldHold) {
-        if (shouldHold) {
-            addHoldShiftMessage(components);
-        } else {
-            addReleaseShiftMessage(components);
-        }
-    }
-
-    private static void addHoldShiftMessage(List<Component> components) {
-        components.add(holdShiftComponent);
-    }
-
-    private static void addReleaseShiftMessage(List<Component> components) {
-        components.add(releaseShiftComponent);
+    private static List<ParentTooltip> infoToTooltips(List<PairGroup> pairGroups) {
+        return pairGroups
+                .stream()
+                .map(PairGroup::toTooltip)
+                .collect(Collectors.toList());
     }
 
     private static List<EnchantmentInstance> getEnchantmentsFromTag(ListTag enchantmentTag) {

@@ -1,7 +1,6 @@
 package team.durt.enchantmentinfo.gui.group;
 
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
-import team.durt.enchantmentinfo.gui.TooltipBuilder;
 import team.durt.enchantmentinfo.gui.TooltipHelper;
 import team.durt.enchantmentinfo.gui.tooltip.ParentTooltip;
 
@@ -44,7 +43,7 @@ public abstract class HeadGroup implements InfoHolder {
 
         @Override
         public ParentTooltip toTooltip() {
-            return TooltipBuilder.pairToTooltip(this);
+            return TooltipHelper.pairToTooltip(this);
         }
     }
 }

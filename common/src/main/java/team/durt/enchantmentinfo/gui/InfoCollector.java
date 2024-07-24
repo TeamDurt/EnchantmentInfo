@@ -11,6 +11,7 @@ import team.durt.enchantmentinfo.gui.group.InfoGroup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class InfoCollector {
     public static ArrayList<InfoParser> infoParsers = new ArrayList<>(List.of(
@@ -21,27 +22,30 @@ public class InfoCollector {
     static EnchantmentDataManager enchantmentDataManager = EnchantmentDataManager.getInstance();
     static ModEnchantmentCategoryManager enchantmentCategoryManager = ModEnchantmentCategoryManager.getInstance();
 
+    public static List<HeadGroup.PairGroup> getInfo(List<EnchantmentInstance> enchantmentInstanceList) {
+        return simplify(getRawInfo(enchantmentInstanceList));
+    }
+
     public static List<HeadGroup.PairGroup> simplify(List<HeadGroup.PairGroup> groups) {
         //todo grouping logic here
 
         return groups;
     }
 
-    public static List<HeadGroup.PairGroup> getGroupedInfo(List<EnchantmentInstance> enchantmentInstanceList) {
-        List<HeadGroup.PairGroup> groups = new ArrayList<>();
-        for (EnchantmentInstance enchantmentInstance : enchantmentInstanceList) {
-            groups.add(getGroupedInfo(enchantmentInstance));
-        }
-        return groups;
+    public static List<HeadGroup.PairGroup> getRawInfo(List<EnchantmentInstance> enchantmentInstanceList) {
+        return enchantmentInstanceList
+                .stream()
+                .map(InfoCollector::getRawInfo)
+                .collect(Collectors.toList());
     }
 
-    public static HeadGroup.PairGroup getGroupedInfo(EnchantmentInstance enchantmentInstance) {
+    public static HeadGroup.PairGroup getRawInfo(EnchantmentInstance enchantmentInstance) {
         HeadGroup.HeadEnchantmentsGroup headEnchantments = new HeadGroup.HeadEnchantmentsGroup(enchantmentInstance);
 
         InfoGroup.All info = new InfoGroup.All();
-        for (InfoParser parser : infoParsers) {
-            info.addChild(parser.parse(enchantmentInstance));
-        }
+        infoParsers.stream()
+                .map(parser -> parser.parse(enchantmentInstance))
+                .forEach(info::addChild);
 
         return new HeadGroup.PairGroup(headEnchantments, info);
     }
@@ -51,6 +55,7 @@ public class InfoCollector {
     ) {
         List<Enchantment> incompatibleEnchantments = enchantmentDataManager
                 .getIncompatibleEnchantments(enchantmentInstance.enchantment);
+
         if (incompatibleEnchantments.isEmpty()) return null;
 
         InfoGroup.IncompatibleEnchantments group = new InfoGroup.IncompatibleEnchantments();
