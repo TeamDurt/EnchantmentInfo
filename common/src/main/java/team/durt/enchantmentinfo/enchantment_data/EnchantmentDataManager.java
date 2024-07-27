@@ -27,19 +27,19 @@ public class EnchantmentDataManager {
     }
 
     public List<Enchantment> getIncompatibleEnchantments(Enchantment enchantment) {
-        return incompatibleEnchantments.getOrDefault(enchantment, Collections.emptyList());
+        return List.copyOf(incompatibleEnchantments.getOrDefault(enchantment, Collections.emptyList()));
     }
 
     public List<ModEnchantmentCategory> getEnchantmentCategories(Enchantment enchantment) {
-        return enchantmentCategories.getOrDefault(enchantment, Collections.emptyList());
+        return List.copyOf(enchantmentCategories.getOrDefault(enchantment, Collections.emptyList()));
     }
 
     public List<List<Item>> getIncludedItemGroups(Enchantment enchantment) {
-        return enchantmentIncludedItemGroups.getOrDefault(enchantment, Collections.emptyList());
+        return List.copyOf(enchantmentIncludedItemGroups.getOrDefault(enchantment, Collections.emptyList()));
     }
 
     public List<List<Item>> getExcludedItemGroups(Enchantment enchantment) {
-        return enchantmentExcludedItemGroups.getOrDefault(enchantment, Collections.emptyList());
+        return List.copyOf(enchantmentExcludedItemGroups.getOrDefault(enchantment, Collections.emptyList()));
     }
 
     public void populateIncompatibleEnchantments() {
@@ -102,7 +102,6 @@ public class EnchantmentDataManager {
     public static List<List<Item>> groupItemsByTags(List<Item> items) {
         List<Item> input = new ArrayList<>(items);
         List<List<Item>> groups = new ArrayList<>();
-
         Services.REGISTRY.getRegisteredItemTags().forEach(tagKey -> {
             List<Item> taggedItems = items.stream()
                     .filter(item -> new ItemStack(item).is(tagKey))
@@ -116,7 +115,7 @@ public class EnchantmentDataManager {
         List<List<Item>> result = new ArrayList<>();
         while (!groups.isEmpty()) {
             List<Item> biggestGroup = groups.stream().max(Comparator.comparingInt(List::size)).orElse(null);
-            result.add(biggestGroup);
+            result.add(List.copyOf(biggestGroup));
             groups.remove(biggestGroup);
             input.removeAll(biggestGroup);
             groups.forEach(group -> group.removeAll(biggestGroup));
@@ -124,6 +123,6 @@ public class EnchantmentDataManager {
         }
 
         input.forEach(item -> result.add(Collections.singletonList(item)));
-        return result;
+        return List.copyOf(result);
     }
 }

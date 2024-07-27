@@ -27,7 +27,7 @@ public class ModEnchantmentCategoryManager {
     }
 
     public Set<ModEnchantmentCategory> getCategories() {
-        return categories;
+        return Set.copyOf(categories);
     }
 
     public ModEnchantmentCategory getCategory(String name) {
