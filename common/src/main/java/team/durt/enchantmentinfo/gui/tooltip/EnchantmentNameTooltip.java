@@ -23,6 +23,11 @@ public class EnchantmentNameTooltip extends ClientTextTooltip {
         this.enchantmentInstance = enchantmentInstance;
     }
 
+    @Override
+    public int getHeight() {
+        return super.getHeight() - 2; // 8 for better math, any letter's height is basically 8
+    }
+
     public EnchantmentInstance getEnchantmentInstance() {
         return enchantmentInstance;
     }

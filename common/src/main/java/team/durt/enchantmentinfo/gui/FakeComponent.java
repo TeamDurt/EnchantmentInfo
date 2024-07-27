@@ -8,16 +8,15 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.FormattedCharSink;
-import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 /**
- * Used to store {@link ClientTooltipComponent Tooltip Components} and be able to be added to List of {@link Component Components}
+ * Used to store {@link ClientTooltipComponent Tooltip Components} meanwhile being able to be added to List of {@link Component Components}
  *
  * @see TooltipBuilder#build(List, ListTag)
- * @see #tooltipsToComponents(List)
+ * @see team.durt.enchantmentinfo.mixin.GuiGraphicsMixin#parseTooltips(List)
  */
 public class FakeComponent implements Component {
     MutableComponent emptyComponent = Component.empty();
@@ -65,21 +64,5 @@ public class FakeComponent implements Component {
         public boolean accept(@NotNull FormattedCharSink var1) {
             return emptySequence.accept(var1);
         }
-    }
-
-    /**
-     * "Hides" List of given {@link ClientTooltipComponent tooltips} in List of {@link FakeComponent}
-     * so it can be added to List of {@link Component}
-     *
-     * @see FakeComponent
-     * @see TooltipBuilder#build(List, ListTag)
-     * @see team.durt.enchantmentinfo.mixin.GuiGraphicsMixin#parseTooltips(List)
-     */
-    public static List<FakeComponent> tooltipsToComponents(List<? extends ClientTooltipComponent> tooltipComponents) {
-        List<FakeComponent> fakeComponents = Lists.newArrayList();
-        for (ClientTooltipComponent tooltipComponent : tooltipComponents) {
-            fakeComponents.add(new FakeComponent(tooltipComponent));
-        }
-        return fakeComponents;
     }
 }

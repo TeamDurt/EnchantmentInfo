@@ -33,6 +33,10 @@ public class ParentTooltip implements ClientTooltipComponent, Parent<ClientToolt
         this(Lists.newArrayList(), orientation, gap);
     }
 
+    public ParentTooltip(List<? extends ClientTooltipComponent> childTooltips) {
+        this(childTooltips, Orientation.VERTICAL, 0);
+    }
+
     public ParentTooltip(List<? extends ClientTooltipComponent> childTooltips, Orientation orientation, int gap) {
         this.childTooltips = new ArrayList<>(childTooltips);
         this.orientation = orientation;
@@ -64,12 +68,14 @@ public class ParentTooltip implements ClientTooltipComponent, Parent<ClientToolt
         return this.childTooltips;
     }
 
-    public void setSpaceBefore(int gap) {
+    public ParentTooltip setSpaceBefore(int gap) {
         this.spaceBefore = gap;
+        return this;
     }
 
-    public void setSpaceAfter(int gap) {
+    public ParentTooltip setSpaceAfter(int gap) {
         this.spaceAfter = gap;
+        return this;
     }
 
     @Override

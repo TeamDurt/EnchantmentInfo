@@ -9,8 +9,7 @@ import team.durt.enchantmentinfo.enchantment_data.EnchantmentDataManager;
 import team.durt.enchantmentinfo.gui.group.HeadGroup;
 import team.durt.enchantmentinfo.gui.group.InfoGroup;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class InfoCollector {
@@ -51,9 +50,7 @@ public class InfoCollector {
      * @see InfoGroup
      */
     public static List<HeadGroup.PairGroup> simplify(List<HeadGroup.PairGroup> groups) {
-        //todo grouping logic here
-
-        return groups;
+        return Grouper.group(groups);
     }
 
     public static List<HeadGroup.PairGroup> getRawInfo(List<EnchantmentInstance> enchantmentInstanceList) {
@@ -64,7 +61,7 @@ public class InfoCollector {
     }
 
     /**
-     * This method returns one {@link HeadGroup.PairGroup} for given {@link EnchantmentInstance}.
+     * Returns one {@link HeadGroup.PairGroup} for given {@link EnchantmentInstance}.
      * Raw Info basically means that returned {@link HeadGroup.PairGroup} is simplest {@link HeadGroup.PairGroup}
      * that can be gotten from this {@link EnchantmentInstance}, It only contains single Enchantment as {@link HeadGroup.HeadEnchantmentsGroup Head} and
      * all {@link InfoGroup.All Info} for given {@link EnchantmentInstance}.

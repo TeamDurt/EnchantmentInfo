@@ -13,7 +13,6 @@ import team.durt.enchantmentinfo.gui.group.HeadGroup.PairGroup;
 import team.durt.enchantmentinfo.gui.tooltip.ParentTooltip;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TooltipBuilder {
     /**
@@ -41,20 +40,13 @@ public class TooltipBuilder {
     private static void addCustomTooltips(List<Component> components, ListTag enchantmentTags) {
         List<EnchantmentInstance> enchantments = getEnchantmentsFromTag(enchantmentTags);
 
-        // collecting info grouped by similar parts //todo (placeholder, not done yet)
+        // collecting info grouped by similar parts
         List<PairGroup> info = InfoCollector.getInfo(enchantments);
-        // transforming all info to tooltip components
-        List<ParentTooltip> tooltips = infoToTooltips(info);
+        // transforming all info to tooltip component
+        ParentTooltip tooltip = TooltipHelper.infoToTooltip(info).setSpaceAfter(2);
 
-        // adding tooltips to components list using FakeComponent as tooltip holder, so it matches the list type
-        components.addAll(FakeComponent.tooltipsToComponents(tooltips));
-    }
-
-    private static List<ParentTooltip> infoToTooltips(List<PairGroup> pairGroups) {
-        return pairGroups
-                .stream()
-                .map(PairGroup::toTooltip)
-                .collect(Collectors.toList());
+        // adding tooltip to components list using FakeComponent as tooltip holder, so it matches the list type
+        components.add(new FakeComponent(tooltip));
     }
 
     private static List<EnchantmentInstance> getEnchantmentsFromTag(ListTag enchantmentTag) {

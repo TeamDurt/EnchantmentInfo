@@ -57,9 +57,34 @@ public abstract class HeadGroup implements InfoHolder {
             return tail;
         }
 
+        public void extract(InfoGroup.All info) {
+            InfoGroup.extract(getTail(), info);
+        }
+
+        public InfoGroup.All getSimilarInfo(InfoGroup.All info) {
+            return getTail().getSimilar(info);
+        }
+
         @Override
         public ParentTooltip toTooltip() {
             return TooltipHelper.pairToTooltip(this);
+        }
+    }
+
+    public static class HeadPairListGroup extends HeadGroup {
+        List<PairGroup> heads;
+
+        public HeadPairListGroup(List<PairGroup> heads) {
+            this.heads = heads;
+        }
+
+        public List<PairGroup> getHeads() {
+            return heads;
+        }
+
+        @Override
+        public ParentTooltip toTooltip() {
+            return TooltipHelper.infoToTooltip(getHeads());
         }
     }
 }
