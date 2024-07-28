@@ -85,8 +85,9 @@ public class InfoCollector {
     private static InfoGroup.IncompatibleEnchantments parseIncompatibleEnchantments(
             EnchantmentInstance enchantmentInstance
     ) {
-        List<Enchantment> incompatibleEnchantments = enchantmentDataManager
-                .getIncompatibleEnchantments(enchantmentInstance.enchantment);
+        List<Enchantment> incompatibleEnchantments = new ArrayList<>(
+                enchantmentDataManager.getIncompatibleEnchantments(enchantmentInstance.enchantment)
+        );
 
         if (incompatibleEnchantments.isEmpty()) return null;
 
@@ -99,9 +100,15 @@ public class InfoCollector {
     private static InfoGroup.Enchantables parseEnchantableItems(EnchantmentInstance enchantmentInstance) {
         Enchantment enchantment = enchantmentInstance.enchantment;
 
-        List<ModEnchantmentCategory> categories = enchantmentDataManager.getEnchantmentCategories(enchantment);
-        List<List<Item>> included = enchantmentDataManager.getIncludedItemGroups(enchantment);
-        List<List<Item>> excluded = enchantmentDataManager.getExcludedItemGroups(enchantment);
+        List<ModEnchantmentCategory> categories = new ArrayList<>(enchantmentDataManager.getEnchantmentCategories(enchantment));
+        List<List<Item>> included = enchantmentDataManager.getIncludedItemGroups(enchantment)
+                .stream()
+                .map(ArrayList::new)
+                .collect(Collectors.toList()); // mutable copies
+        List<List<Item>> excluded = enchantmentDataManager.getExcludedItemGroups(enchantment).
+                stream()
+                .map(ArrayList::new)
+                .collect(Collectors.toList()); // mutable copies
         if (categories.isEmpty() && included.isEmpty() && excluded.isEmpty()) return null;
 
         InfoGroup.Enchantables group = new InfoGroup.Enchantables();
