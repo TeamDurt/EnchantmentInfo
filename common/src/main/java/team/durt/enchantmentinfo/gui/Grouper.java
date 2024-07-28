@@ -22,13 +22,13 @@ public class Grouper {
      * @see #group(List)
      */
     private static List<HeadGroup.PairGroup> sort(List<HeadGroup.PairGroup> groups) {
-        Map<String, List<Integer>> map = new HashMap<>();
+        Map<InfoLink, List<Integer>> map = new HashMap<>();
 
         for (int i = 0; i < groups.size(); i++) {
             HeadGroup.PairGroup pair = groups.get(i);
             InfoGroup.All all = pair.getTail();
             for (InfoGroup<?> group : all.getChildList()) {
-                for (String link : getContentLinksList(group)) {
+                for (InfoLink link : getContentLinksList(group)) {
                     if (!map.containsKey(link)) {
                         map.put(link, new ArrayList<>(List.of(i)));
                     } else {
@@ -64,35 +64,70 @@ public class Grouper {
     }
 
     /**
-     * Return List of "Links" to each information Object in info.
-     * "Link" is a {@link String} that contains name of each class in row from info to end Object
-     * going through every {@link InfoGroup} in given group's child list
-     * and ends with {@link String} gotten from {@link Object#toString()} method for this information Object.
-     * Link always starts with given info class name.
+     * Return List of {@link InfoLink InfoLinks} to each information Object in given {@link InfoGroup}.
+     * {@link InfoLink} contains name of each class in row from given {@link InfoGroup} to end Object
+     * going through every {@link InfoGroup} in given group's child list in its {@link InfoLink#link} field
+     * and contains information Object itself in its {@link InfoLink#info} field.
+     * {@link InfoLink#link} always starts with given info class name.
      * This method intended to be used in {@link #sort(List)}.
      * Specifying Link to end Object needed to store information about this Object's parent as {@link InfoGroup InfoGroups}
      * to be able to compare two different Object's of same class considering their parents.
      *
+     * @see InfoLink
      * @see #sort(List)
      * @see InfoGroup
      * @see InfoGroup#content
      * @see InfoGroup.InfoGroupsContainer
      */
-    // todo add object itself to link for comparing via equals
-    private static List<String> getContentLinksList(InfoGroup<?> info) {
-        List<String> list = new ArrayList<>();
+    private static List<InfoLink> getContentLinksList(InfoGroup<?> info) {
+        List<InfoLink> list = new ArrayList<>();
         String infoLink = info.getClass().toString();
         for (Object o : info.getChildList()) {
             if (o instanceof InfoGroup<?> group) {
-                for (String subLink : getContentLinksList(group)) {
-                    list.add(infoLink + subLink);
+                for (InfoLink subLink : getContentLinksList(group)) {
+                    list.add(subLink.appendLink(infoLink));
                 }
             } else {
-                list.add(infoLink + o.toString());
+                list.add(new InfoLink(infoLink, o));
             }
         }
         return list;
     }
+
+     /**
+     * Stores Object and {@link String} link to it. Link is intended to contain {@link InfoGroup} class names.
+     * Intended to be used in {@link #getContentLinksList(InfoGroup)} and {@link #sort(List)}.
+     *
+     * @see #getContentLinksList(InfoGroup)
+     * @see #sort(List)
+     */
+    static class InfoLink {
+        String link;
+        Object info;
+
+        InfoLink(String link, Object info) {
+            this.link = link;
+            this.info = info;
+        }
+
+        InfoLink appendLink(String link) {
+            this.link = link + this.link;
+            return this;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof InfoLink otherLink) {
+                return otherLink.link.equals(this.link) && otherLink.info.equals(this.info);
+            }
+            return super.equals(obj);
+        }
+
+         @Override
+         public int hashCode() {
+             return link.hashCode();
+         }
+     }
 
     private static List<HeadGroup.PairGroup> groupList(List<HeadGroup.PairGroup> groups) {
         List<HeadGroup.PairGroup> grouped = groupListBasic(groups); // one-step grouping
