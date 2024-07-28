@@ -3,10 +3,7 @@ package team.durt.enchantmentinfo.gui;
 import team.durt.enchantmentinfo.gui.group.HeadGroup;
 import team.durt.enchantmentinfo.gui.group.InfoGroup;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Grouper {
     public static List<HeadGroup.PairGroup> group(List<HeadGroup.PairGroup> groups) {
@@ -130,28 +127,22 @@ public class Grouper {
      }
 
     private static List<HeadGroup.PairGroup> groupList(List<HeadGroup.PairGroup> groups) {
-        List<HeadGroup.PairGroup> grouped = groupListBasic(groups); // one-step grouping
-        List<HeadGroup.PairGroup> newGrouped = groupListBasic(grouped);
-        // repeat until getting best grouped list
-        while (newGrouped.size() != grouped.size()) { // stop when nothing changes
-            grouped = newGrouped;
-            newGrouped = groupListBasic(newGrouped);
-        }
-        return newGrouped;
-    }
+        if (groups.isEmpty()) return new ArrayList<>();
 
-    private static List<HeadGroup.PairGroup> groupListBasic(List<HeadGroup.PairGroup> groups) {
-        List<HeadGroup.PairGroup> grouped = new ArrayList<>();
-        for (int i = 0; i < groups.size(); i+=2) {
-            // if current element has no pair, just pull it further
-            if (i + 1 == groups.size()) {
-                grouped.add(groups.get(i));
-                break;
+        int i = 0;
+
+        Stack<HeadGroup.PairGroup> stack = new Stack<>();
+        stack.push(groups.get(i++));
+
+        for (; i < groups.size(); i++) {
+            HeadGroup.PairGroup group1 = groups.get(i);
+            HeadGroup.PairGroup group2 = stack.pop();
+            for (HeadGroup.PairGroup grouped : groupBasic(group2, group1)) {
+                stack.push(grouped);
             }
-            // comparing by pairs
-            grouped.addAll(groupBasic(groups.get(i), groups.get(i + 1)));
         }
-        return grouped;
+
+        return stack.stream().toList();
     }
 
     private static List<HeadGroup.PairGroup> groupBasic(HeadGroup.PairGroup group1, HeadGroup.PairGroup group2) {
