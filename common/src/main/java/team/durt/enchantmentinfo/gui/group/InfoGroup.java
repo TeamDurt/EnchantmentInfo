@@ -97,7 +97,7 @@ public abstract class InfoGroup<T> implements Parent<T>, InfoHolder {
 
     @Override
     public InfoGroup<T> setChildList(List<T> childList) {
-        content = new ArrayList<>(childList);
+        content = childList;
         return this;
     }
 
