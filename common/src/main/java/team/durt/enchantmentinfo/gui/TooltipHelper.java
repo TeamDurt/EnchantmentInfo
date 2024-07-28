@@ -154,7 +154,7 @@ public class TooltipHelper {
                 .stream()
                 .map(ItemTooltip::new)
                 .forEach(switcher::addChild);
-        return switcher;
+        return switcher.getChildList().isEmpty() ? null : switcher;
     }
 
     public static ParentTooltip parseHeadEnchantmentsGroup(HeadGroup.HeadEnchantmentsGroup headEnchantmentsGroup) {

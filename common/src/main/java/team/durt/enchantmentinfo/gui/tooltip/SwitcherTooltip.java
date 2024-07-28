@@ -3,9 +3,11 @@ package team.durt.enchantmentinfo.gui.tooltip;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.renderer.MultiBufferSource;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 import team.durt.enchantmentinfo.gui.Parent;
 
 import java.util.ArrayList;
@@ -35,26 +37,43 @@ public class SwitcherTooltip implements ClientTooltipComponent, Parent<ClientToo
 
     @Override
     public int getHeight() {
-        return currentTooltip().getHeight();
+        ClientTooltipComponent tooltip = currentTooltip();
+        if (tooltip == null) return 0;
+        return tooltip.getHeight();
     }
 
     @Override
     public int getWidth(@NotNull Font font) {
-        return currentTooltip().getWidth(font);
+        ClientTooltipComponent tooltip = currentTooltip();
+        if (tooltip == null) return 0;
+        return tooltip.getWidth(font);
+    }
+
+    @Override
+    public void renderText(@NotNull Font font, int x, int y, @NotNull Matrix4f matrix4f, MultiBufferSource.@NotNull BufferSource bufferSource) {
+        ClientTooltipComponent tooltip = currentTooltip();
+        if (tooltip == null) return;
+        tooltip.renderText(font, x, y, matrix4f, bufferSource);
     }
 
     @Override
     public void renderImage(@NotNull Font font, int x, int y, @NotNull GuiGraphics guiGraphics) {
-        currentTooltip().renderImage(font, x, y, guiGraphics);
+        ClientTooltipComponent tooltip = currentTooltip();
+        if (tooltip == null) return;
+        tooltip.renderImage(font, x, y, guiGraphics);
     }
 
     int currentTooltipIndex() {
+        if (tooltips.isEmpty()) return -1;
         long l = System.currentTimeMillis() / interval;
         return (int) (l % tooltips.size());
     }
 
+    @Nullable
     ClientTooltipComponent currentTooltip() {
-        return tooltips.get(currentTooltipIndex());
+        int index = currentTooltipIndex();
+        if (index < 0) return null;
+        return tooltips.get(index);
     }
 
     public SwitcherTooltip addChild(@Nullable ClientTooltipComponent child) {
