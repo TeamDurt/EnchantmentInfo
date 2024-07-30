@@ -19,6 +19,63 @@ public class Grouper {
      * @see #group(List)
      */
     private static List<HeadGroup.PairGroup> sort(List<HeadGroup.PairGroup> groups) {
+        // mapping information and its indexes in groups list
+        Map<InfoLink, List<Integer>> map = getIndexesMap(groups);
+        // getting and sorting indexes lists
+        List<List<Integer>> sortedIndexes = sortIndexes(map.values());
+        // second sorting depending on combinations inside
+        sortViaLowerLists(sortedIndexes);
+        // transforming indexes back to groups
+        return collectGroupsByIndexes(groups, sortedIndexes);
+    }
+
+    private static void sortViaLowerLists(List<List<Integer>> sortedIndexes) {
+        for (int listIndex = sortedIndexes.size() - 1; listIndex >= 0; listIndex--) {
+            List<Integer> list = sortedIndexes.get(listIndex);
+            if (list.size() <= 2) continue;
+
+            List<Integer> newIndexes = new ArrayList<>();
+
+            for (int currentIndex = 0; currentIndex < list.size(); currentIndex++) {
+                List<Integer> nextLowest = new ArrayList<>();
+                List<Integer> subList = list.subList(currentIndex, list.size());
+
+                for (int i = listIndex; i < sortedIndexes.size(); i++) {
+                    List<Integer> next = sortedIndexes.get(i);
+                    if (next.size() < 2) break;
+                    if (next.size() < subList.size()) {
+                        if (new HashSet<>(subList).containsAll(next)) {
+                            nextLowest = next;
+                            break;
+                        }
+                    }
+                }
+
+                if (nextLowest.isEmpty()) {
+                    newIndexes.add(list.get(currentIndex));
+                } else {
+                    newIndexes.addAll(nextLowest);
+                    currentIndex += nextLowest.size() - 1;
+                }
+            }
+
+            sortedIndexes.set(listIndex, newIndexes);
+        }
+    }
+
+    private static List<HeadGroup.PairGroup> collectGroupsByIndexes(List<HeadGroup.PairGroup> groups, List<List<Integer>> indexes) {
+        List<HeadGroup.PairGroup> sorted = new ArrayList<>();
+        for (List<Integer> list : indexes) {
+            for (Integer index : list) {
+                if (!sorted.contains(groups.get(index))) {
+                    sorted.add(groups.get(index));
+                }
+            }
+        }
+        return sorted;
+    }
+
+    private static Map<InfoLink, List<Integer>> getIndexesMap(List<HeadGroup.PairGroup> groups) {
         Map<InfoLink, List<Integer>> map = new HashMap<>();
 
         for (int i = 0; i < groups.size(); i++) {
@@ -35,8 +92,12 @@ public class Grouper {
             }
         }
 
-        List<List<Integer>> sortedIndexes = map.values()
-                .stream()
+        return map;
+    }
+
+    private static List<List<Integer>> sortIndexes(Collection<List<Integer>> indexes) {
+        return new ArrayList<>(
+                indexes.stream()
                 .sorted((list1, list2) -> {
                     int result = list2.size() - list1.size();
                     if (result != 0) return result;
@@ -46,18 +107,8 @@ public class Grouper {
                     }
                     return result;
                 }) // sorting lists by their sizes from most to least, and their content from least to most
-                .toList();
-
-        List<HeadGroup.PairGroup> sorted = new ArrayList<>();
-        for (List<Integer> indexes : sortedIndexes) {
-            for (Integer index : indexes) {
-                if (!sorted.contains(groups.get(index))) {
-                    sorted.add(groups.get(index));
-                }
-            }
-        }
-
-        return sorted;
+                .toList()
+        );
     }
 
     /**
@@ -91,7 +142,7 @@ public class Grouper {
         return list;
     }
 
-     /**
+    /**
      * Stores Object and {@link String} link to it. Link is intended to contain {@link InfoGroup} class names.
      * Intended to be used in {@link #getContentLinksList(InfoGroup)} and {@link #sort(List)}.
      *
@@ -120,11 +171,11 @@ public class Grouper {
             return super.equals(obj);
         }
 
-         @Override
-         public int hashCode() {
-             return link.hashCode();
-         }
-     }
+        @Override
+        public int hashCode() {
+            return link.hashCode();
+        }
+    }
 
     private static List<HeadGroup.PairGroup> groupList(List<HeadGroup.PairGroup> groups) {
         if (groups.isEmpty()) return new ArrayList<>();
