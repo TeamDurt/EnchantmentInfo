@@ -43,7 +43,7 @@ public abstract class InfoGroup<T> implements Parent<T>, InfoHolder {
                 if (group == null) continue;
                 // giving extract() method object of same class as group
                 group.extract(entryGroup);
-                if (group.getChildList().isEmpty()) {
+                if (group.isEmpty()) {
                     // we can assert that group is instance of T from getGroupWithSameClass()
                     this.getChildList().remove((T) group);
                 }
@@ -92,6 +92,10 @@ public abstract class InfoGroup<T> implements Parent<T>, InfoHolder {
         return null;
     }
 
+    public boolean isEmpty() {
+        return this.getChildList().isEmpty();
+    }
+
     @Override
     public InfoGroup<T> addChild(T child) {
         if (child == null) return this;
@@ -133,7 +137,7 @@ public abstract class InfoGroup<T> implements Parent<T>, InfoHolder {
                 if (ourInfo == null) continue;
                 // giving getSimilar() method object of same class as ourInfo
                 InfoGroup<R> subSimilar = ourInfo.getSimilar(group);
-                if (subSimilar.getChildList().isEmpty()) continue;
+                if (subSimilar.isEmpty()) continue;
                 groups.add(subSimilar);
             }
             return groups;
@@ -230,11 +234,11 @@ public abstract class InfoGroup<T> implements Parent<T>, InfoHolder {
                 Items similar = new Items();
                 for (Items their : info) {
                     Items subSimilar = our.getSimilar(their);
-                    if (!subSimilar.getChildList().isEmpty()) {
+                    if (!subSimilar.isEmpty()) {
                         subSimilar.getChildList().forEach(similar::addChild);
                     }
                 }
-                if (!similar.getChildList().isEmpty()) {
+                if (!similar.isEmpty()) {
                     similarContent.add(similar);
                 }
             }

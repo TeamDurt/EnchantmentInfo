@@ -7,6 +7,10 @@ import team.durt.enchantmentinfo.gui.tooltip.ParentTooltip;
 import java.util.List;
 
 public abstract class HeadGroup implements InfoHolder {
+    public boolean shouldBeHighlightedInTooltip() {
+        return true;
+    }
+
     /**
      * Contains List of {@link EnchantmentInstance} and used to be stored in {@link PairGroup}.
      *
@@ -27,6 +31,11 @@ public abstract class HeadGroup implements InfoHolder {
         @Override
         public ParentTooltip toTooltip() {
             return TooltipHelper.parseHeadEnchantmentsGroup(this);
+        }
+
+        @Override
+        public boolean shouldBeHighlightedInTooltip() {
+            return enchantments.size() > 1;
         }
     }
 

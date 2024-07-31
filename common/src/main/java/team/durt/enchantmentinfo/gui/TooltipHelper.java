@@ -7,7 +7,10 @@ import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import team.durt.enchantmentinfo.gui.group.HeadGroup;
 import team.durt.enchantmentinfo.gui.group.InfoGroup;
 import team.durt.enchantmentinfo.gui.group.InfoHolder;
-import team.durt.enchantmentinfo.gui.tooltip.*;
+import team.durt.enchantmentinfo.gui.tooltip.ItemTooltip;
+import team.durt.enchantmentinfo.gui.tooltip.LineGroupTooltip;
+import team.durt.enchantmentinfo.gui.tooltip.ParentTooltip;
+import team.durt.enchantmentinfo.gui.tooltip.SwitcherTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.enchantment_name.EnchantmentNameTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.enchantment_name.HeadEnchantmentNameTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.line.BlueLineTooltip;
@@ -37,28 +40,22 @@ public class TooltipHelper {
     public static ParentTooltip infoToTooltip(List<HeadGroup.PairGroup> pairGroups) {
         return new ParentTooltip(
                 pairGroups.stream()
-                .map(HeadGroup.PairGroup::toTooltip)
-                .collect(Collectors.toList())
+                        .map(HeadGroup.PairGroup::toTooltip)
+                        .collect(Collectors.toList())
         ).setGap(2);
     }
 
     public static ParentTooltip pairToTooltip(HeadGroup.PairGroup pairGroup) {
         ParentTooltip parent = new ParentTooltip().setGap(2);
 
-        if (pairGroup.getHead() instanceof HeadGroup.HeadEnchantmentsGroup group) {
-            parent.addChild(group.toTooltip());
-        } else {
-            ClientTooltipComponent headTooltip = pairGroup.getHead().toTooltip();
+        ClientTooltipComponent headTooltip = pairGroup.getHead().toTooltip();
+        if (!pairGroup.getTail().isEmpty() && pairGroup.getHead().shouldBeHighlightedInTooltip()) {
             if (headTooltip != null) {
-                if (!pairGroup.getTail().getChildList().isEmpty()) {
-                    BlueLineTooltip blueLine = new BlueLineTooltip(headTooltip.getHeight());
-                    LineGroupTooltip lineGroup = new LineGroupTooltip(blueLine, headTooltip);
-                    parent.addChild(lineGroup); // under blue line
-                } else {
-                    parent.addChild(headTooltip);
-                }
+                BlueLineTooltip blueLine = new BlueLineTooltip(headTooltip.getHeight());
+                headTooltip = new LineGroupTooltip(blueLine, headTooltip); // under blue line
             }
         }
+        parent.addChild(headTooltip);
 
         ParentTooltip info = pairGroup.getTail().toTooltip();
 
@@ -141,7 +138,7 @@ public class TooltipHelper {
     }
 
     public static ParentTooltip parseCategories(InfoGroup.Categories categories) {
-        if (categories == null || categories.getChildList().isEmpty()) return null;
+        if (categories == null || categories.isEmpty()) return null;
 
         List<EnchantmentCategoryTooltip> tooltips = categories
                 .getChildList()
@@ -176,7 +173,7 @@ public class TooltipHelper {
     }
 
     public static ParentTooltip collectChildTooltips(InfoGroup<? extends InfoGroup<?>> infoGroup) {
-        if (infoGroup.getChildList().isEmpty()) return null;
+        if (infoGroup.isEmpty()) return null;
         ParentTooltip parent = new ParentTooltip();
         infoGroup.getChildList()
                 .stream()

@@ -198,13 +198,13 @@ public class Grouper {
 
     private static List<HeadGroup.PairGroup> groupBasic(HeadGroup.PairGroup group1, HeadGroup.PairGroup group2) {
         InfoGroup.All similarPart = getSimilar(group1, group2); // info that both groups have
-        if (similarPart.getChildList().isEmpty()) return List.of(group1, group2);
+        if (similarPart.isEmpty()) return List.of(group1, group2);
         group1.extract(similarPart); // extracting duplicated info
         group2.extract(similarPart);
         HeadGroup.PairGroup pair = new HeadGroup.PairGroup(
                 new HeadGroup.HeadPairListGroup(List.of(group1, group2)),
                 similarPart
-        ); // todo squash lists
+        );
         return List.of(pair);
     }
 
