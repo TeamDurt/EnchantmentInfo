@@ -27,24 +27,28 @@ public abstract class InfoGroup<T> implements Parent<T>, InfoHolder {
     List<T> content = new ArrayList<>();
 
     /**
-     * Removes from source content List entries that are contained is target's content List.
+     * Removes from content List entries that are contained is target's content List.
      * Intended to work with {@link InfoGroup InfoGroups} as members of content Lists too.
      *
-     * @param source Group to modify.
-     * @param infoToExtract Group which content will be removed from source group.
+     * @param infoToExtract Group which content will be removed from this group.
      */
-    // todo make not static and overrideable
-    public static void extract(InfoGroup<?> source, InfoGroup<?> infoToExtract) { // same type
-        for (Object entry : infoToExtract.getChildList()) {
-            if (entry instanceof InfoGroup<?> entryGroup) {
-                InfoGroup<?> group = getGroupWithSameClass(source.getChildList(), entryGroup);
+    @SuppressWarnings("unchecked")
+    public <R> void extract(InfoGroup<T> infoToExtract) {
+        for (T entry : infoToExtract.getChildList()) {
+            if (entry instanceof InfoGroup<?> g) {
+                // casting for compiler to know that entryGroup and group are of the exact same class,
+                // we can assert that they are from getGroupWithSameClass()
+                InfoGroup<R> entryGroup = (InfoGroup<R>) g;
+                InfoGroup<R> group = (InfoGroup<R>) getGroupWithSameClass(this.getChildList(), entryGroup);
                 if (group == null) continue;
-                extract(group, entryGroup);
+                // giving extract() method object of same class as group
+                group.extract(entryGroup);
                 if (group.getChildList().isEmpty()) {
-                    source.getChildList().remove(group);
+                    // we can assert that group is instance of T from getGroupWithSameClass()
+                    this.getChildList().remove((T) group);
                 }
             } else {
-                source.getChildList().remove(entry);
+                this.getChildList().remove(entry);
             }
         }
     }
@@ -125,9 +129,9 @@ public abstract class InfoGroup<T> implements Parent<T>, InfoHolder {
                 InfoGroup<R> group = (InfoGroup<R>) g;
                 InfoGroup<R> ourInfo = (InfoGroup<R>) getGroupWithSameClass(this.getChildList(), group);
                 // casting for compiler to know that group and ourInfo are of the exact same class,
-                // we can assert that they are from getGroupWithSameClass
+                // we can assert that they are from getGroupWithSameClass()
                 if (ourInfo == null) continue;
-                // giving getSimilar method object of same class as ourInfo
+                // giving getSimilar() method object of same class as ourInfo
                 InfoGroup<R> subSimilar = ourInfo.getSimilar(group);
                 if (subSimilar.getChildList().isEmpty()) continue;
                 groups.add(subSimilar);

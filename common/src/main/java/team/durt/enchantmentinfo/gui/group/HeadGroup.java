@@ -58,7 +58,7 @@ public abstract class HeadGroup implements InfoHolder {
         }
 
         public void extract(InfoGroup.All info) {
-            InfoGroup.extract(getTail(), info);
+            getTail().extract(info);
         }
 
         public InfoGroup.All getSimilarInfo(InfoGroup.All info) {
