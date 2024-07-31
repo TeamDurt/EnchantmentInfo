@@ -8,6 +8,8 @@ import team.durt.enchantmentinfo.gui.group.HeadGroup;
 import team.durt.enchantmentinfo.gui.group.InfoGroup;
 import team.durt.enchantmentinfo.gui.group.InfoHolder;
 import team.durt.enchantmentinfo.gui.tooltip.*;
+import team.durt.enchantmentinfo.gui.tooltip.enchantment_name.EnchantmentNameTooltip;
+import team.durt.enchantmentinfo.gui.tooltip.enchantment_name.HeadEnchantmentNameTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.line.BlueLineTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.line.ColoredLineTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.line.GreenLineTooltip;
@@ -89,11 +91,19 @@ public class TooltipHelper {
     }
 
     public static ParentTooltip parseEnchantmentNamesList(List<EnchantmentInstance> enchantmentInstances) {
+        return parseEnchantmentNamesList(enchantmentInstances, false);
+    }
+
+    public static ParentTooltip parseHeadEnchantmentNamesList(List<EnchantmentInstance> enchantmentInstances) {
+        return parseEnchantmentNamesList(enchantmentInstances, true);
+    }
+
+    public static ParentTooltip parseEnchantmentNamesList(List<EnchantmentInstance> enchantmentInstances, boolean head) {
         if (enchantmentInstances.isEmpty()) return null;
 
         ParentTooltip parent = new ParentTooltip().setGap(2);
         enchantmentInstances.stream()
-                .map(TooltipHelper::parseEnchantmentName)
+                .map(head ? TooltipHelper::parseHeadEnchantmentName : TooltipHelper::parseEnchantmentName)
                 .forEach(parent::addChild);
 
         return parent;
@@ -101,6 +111,10 @@ public class TooltipHelper {
 
     private static EnchantmentNameTooltip parseEnchantmentName(EnchantmentInstance enchantmentInstance) {
         return new EnchantmentNameTooltip(enchantmentInstance);
+    }
+
+    private static HeadEnchantmentNameTooltip parseHeadEnchantmentName(EnchantmentInstance enchantmentInstance) {
+        return new HeadEnchantmentNameTooltip(enchantmentInstance);
     }
 
     public static LineGroupTooltip parseCoolItems(InfoGroup.CoolItems coolItems) {
@@ -158,7 +172,7 @@ public class TooltipHelper {
     }
 
     public static ParentTooltip parseHeadEnchantmentsGroup(HeadGroup.HeadEnchantmentsGroup headEnchantmentsGroup) {
-        return parseEnchantmentNamesList(headEnchantmentsGroup.getEnchantments());
+        return parseHeadEnchantmentNamesList(headEnchantmentsGroup.getEnchantments());
     }
 
     public static ParentTooltip collectChildTooltips(InfoGroup<? extends InfoGroup<?>> infoGroup) {
