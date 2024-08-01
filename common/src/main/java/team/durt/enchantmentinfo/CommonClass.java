@@ -1,8 +1,8 @@
 package team.durt.enchantmentinfo;
 
-import team.durt.enchantmentinfo.category.ModEnchantmentCategoryManager;
-import team.durt.enchantmentinfo.compatibility.EnchantmentsCompatibilityManager;
-import team.durt.enchantmentinfo.enchantment_data.EnchantmentDataManager;
+import team.durt.enchantmentinfo.api.category.ModEnchantmentCategoryManager;
+import team.durt.enchantmentinfo.api.compatibility.EnchantmentsCompatibilityManager;
+import team.durt.enchantmentinfo.api.enchantment_data.EnchantmentDataManager;
 import team.durt.enchantmentinfo.platform.Services;
 
 public class CommonClass {

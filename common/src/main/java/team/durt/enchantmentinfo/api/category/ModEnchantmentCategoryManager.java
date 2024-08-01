@@ -1,4 +1,4 @@
-package team.durt.enchantmentinfo.category;
+package team.durt.enchantmentinfo.api.category;
 
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.HoeItem;

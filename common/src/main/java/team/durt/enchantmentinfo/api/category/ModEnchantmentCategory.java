@@ -1,4 +1,4 @@
-package team.durt.enchantmentinfo.category;
+package team.durt.enchantmentinfo.api.category;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;

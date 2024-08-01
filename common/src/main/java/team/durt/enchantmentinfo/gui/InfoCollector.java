@@ -3,9 +3,9 @@ package team.durt.enchantmentinfo.gui;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
-import team.durt.enchantmentinfo.category.ModEnchantmentCategory;
-import team.durt.enchantmentinfo.category.ModEnchantmentCategoryManager;
-import team.durt.enchantmentinfo.enchantment_data.EnchantmentDataManager;
+import team.durt.enchantmentinfo.api.category.ModEnchantmentCategory;
+import team.durt.enchantmentinfo.api.category.ModEnchantmentCategoryManager;
+import team.durt.enchantmentinfo.api.enchantment_data.EnchantmentDataManager;
 import team.durt.enchantmentinfo.gui.group.HeadGroup;
 import team.durt.enchantmentinfo.gui.group.InfoGroup;
 

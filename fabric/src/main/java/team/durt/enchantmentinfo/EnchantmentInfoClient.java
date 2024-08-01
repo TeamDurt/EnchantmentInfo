@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
-import team.durt.enchantmentinfo.enchantment_data.EnchantmentDataManager;
 
 public class EnchantmentInfoClient implements ClientModInitializer {
     @Override

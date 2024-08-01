@@ -2,7 +2,7 @@ package team.durt.enchantmentinfo.gui.group;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
-import team.durt.enchantmentinfo.category.ModEnchantmentCategory;
+import team.durt.enchantmentinfo.api.category.ModEnchantmentCategory;
 import team.durt.enchantmentinfo.gui.InfoCollector;
 import team.durt.enchantmentinfo.gui.Parent;
 import team.durt.enchantmentinfo.gui.TooltipHelper;

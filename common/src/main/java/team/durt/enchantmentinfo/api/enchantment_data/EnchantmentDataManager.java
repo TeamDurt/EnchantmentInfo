@@ -1,8 +1,8 @@
-package team.durt.enchantmentinfo.enchantment_data;
+package team.durt.enchantmentinfo.api.enchantment_data;
 
-import team.durt.enchantmentinfo.category.ModEnchantmentCategory;
-import team.durt.enchantmentinfo.category.ModEnchantmentCategoryManager;
-import team.durt.enchantmentinfo.compatibility.EnchantmentsCompatibilityManager;
+import team.durt.enchantmentinfo.api.category.ModEnchantmentCategoryManager;
+import team.durt.enchantmentinfo.api.category.ModEnchantmentCategory;
+import team.durt.enchantmentinfo.api.compatibility.EnchantmentsCompatibilityManager;
 import team.durt.enchantmentinfo.platform.Services;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;

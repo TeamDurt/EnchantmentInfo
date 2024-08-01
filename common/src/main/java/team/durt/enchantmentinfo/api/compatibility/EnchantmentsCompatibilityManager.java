@@ -1,4 +1,4 @@
-package team.durt.enchantmentinfo.compatibility;
+package team.durt.enchantmentinfo.api.compatibility;
 
 import team.durt.enchantmentinfo.platform.Services;
 import net.minecraft.world.item.enchantment.Enchantment;
