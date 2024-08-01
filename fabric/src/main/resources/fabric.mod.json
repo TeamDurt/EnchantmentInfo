@@ -3,12 +3,20 @@
     "id": "${mod_id}",
     "version": "${version}",
     "name": "${mod_name}",
-    "description": "${description}",
+    "description": "${mod_description}",
     "authors": [
         "${mod_author}"
     ],
-    "contact": {},
-    "license": "${license}",
+    "contributors": [
+        "ListerK",
+        "HiWord9",
+        "Eltarchik"
+    ],
+    "contact": {
+        "sources": "${mod_sources}",
+        "issues": "${mod_issue_tracker}"
+    },
+    "license": "${mod_license}",
     "icon": "${mod_id}.png",
     "environment": "*",
     "entrypoints": {
