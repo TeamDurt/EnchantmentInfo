@@ -1,5 +1,6 @@
 package team.durt.enchantmentinfo.gui;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -9,12 +10,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import org.apache.commons.compress.utils.Lists;
+import team.durt.enchantmentinfo.Constants;
 import team.durt.enchantmentinfo.gui.group.HeadGroup.PairGroup;
 import team.durt.enchantmentinfo.gui.tooltip.ParentTooltip;
 
 import java.util.List;
 
 public class TooltipBuilder {
+    static Exception lastException = null;
+
     /**
      * Takes List of Components and adds {@link net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent Tooltips} to it
      * that are represents information about Enchantments in given {@link ListTag}
@@ -26,8 +30,15 @@ public class TooltipBuilder {
         boolean shiftPressed = Screen.hasShiftDown();
 
         if (shiftPressed) {
-            // custom tooltips
-            addCustomTooltips(components, enchantmentTags);
+            try {
+                // custom tooltips
+                addCustomTooltips(components, enchantmentTags);
+            } catch (Exception e) {
+                // just in case something goes wrong,
+                // we don't want players to experience game crash only because of some little mistake.
+                // planned to be removed on release
+                onException(components, enchantmentTags, e);
+            }
         } else {
             // default enchantment names
             ItemStack.appendEnchantmentNames(components, enchantmentTags);
@@ -63,5 +74,19 @@ public class TooltipBuilder {
                     ));
         }
         return enchantments;
+    }
+
+    private static void onException(List<Component> components, ListTag enchantmentTags, Exception e) {
+        for (int i = 1; i < 6; i++) {
+            components.add(Component.translatable("enchantmentinfo.crash" + i).withStyle(ChatFormatting.RED));
+        }
+        components.add(Component.literal(e.toString()).withStyle(ChatFormatting.RED));
+        if (lastException == null || !e.toString().equals(lastException.toString())) {
+            lastException = e;
+            for (EnchantmentInstance instance : getEnchantmentsFromTag(enchantmentTags)) {
+                Constants.LOG.error(instance.enchantment.getDescriptionId() + " " + instance.level);
+            }
+            Constants.LOG.error("Something went wrong on getting Enchantment Info", e);
+        }
     }
 }
