@@ -36,15 +36,14 @@ public class Grouper {
 
             List<Integer> newIndexes = new ArrayList<>();
 
-            for (int currentIndex = 0; currentIndex < list.size(); currentIndex++) {
+            while (!list.isEmpty()) {
                 List<Integer> nextLowest = new ArrayList<>();
-                List<Integer> subList = list.subList(currentIndex, list.size());
 
                 for (int i = listIndex; i < sortedIndexes.size(); i++) {
                     List<Integer> next = sortedIndexes.get(i);
                     if (next.size() < 2) break;
-                    if (next.size() < subList.size()) {
-                        if (new HashSet<>(subList).containsAll(next)) {
+                    if (next.size() < list.size()) {
+                        if (new HashSet<>(list).containsAll(next)) {
                             nextLowest = next;
                             break;
                         }
@@ -52,10 +51,11 @@ public class Grouper {
                 }
 
                 if (nextLowest.isEmpty()) {
-                    newIndexes.add(list.get(currentIndex));
+                    newIndexes.add(list.get(0));
+                    list.remove(0);
                 } else {
                     newIndexes.addAll(nextLowest);
-                    currentIndex += nextLowest.size() - 1;
+                    list.removeAll(nextLowest);
                 }
             }
 
