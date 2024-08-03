@@ -2,7 +2,7 @@ package team.durt.enchantmentinfo.gui.tooltip.enchantment_name;
 
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
-import team.durt.enchantmentinfo.gui.tooltip.line.BlueLineTooltip;
+import team.durt.enchantmentinfo.gui.ColorManager;
 
 public class HeadEnchantmentNameTooltip extends EnchantmentNameTooltip {
     public HeadEnchantmentNameTooltip(EnchantmentInstance enchantmentInstance) {
@@ -12,6 +12,6 @@ public class HeadEnchantmentNameTooltip extends EnchantmentNameTooltip {
     public static MutableComponent getEnchantmentName(EnchantmentInstance enchantmentInstance) {
         MutableComponent enchantmentName = EnchantmentNameTooltip.getEnchantmentName(enchantmentInstance);
         if (enchantmentInstance.enchantment.isCurse()) return enchantmentName;
-        return enchantmentName.withColor(BlueLineTooltip.BLUE_COLOR);
+        return enchantmentName.withColor(ColorManager.getInstance().getBlue());
     }
 }

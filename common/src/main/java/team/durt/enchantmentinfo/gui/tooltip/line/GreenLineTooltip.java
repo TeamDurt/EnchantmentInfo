@@ -1,9 +1,9 @@
 package team.durt.enchantmentinfo.gui.tooltip.line;
 
-public class GreenLineTooltip extends ColoredLineTooltip {
-    public static final int GREEN_COLOR = -5046528; //#ffb2ff00
+import team.durt.enchantmentinfo.gui.ColorManager;
 
+public class GreenLineTooltip extends ColoredLineTooltip {
     public GreenLineTooltip(int height) {
-        super(GREEN_COLOR, height);
+        super(ColorManager.getInstance().getGreen(), height);
     }
 }
