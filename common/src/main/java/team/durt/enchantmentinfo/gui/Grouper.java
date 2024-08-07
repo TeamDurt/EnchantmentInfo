@@ -98,16 +98,16 @@ public class Grouper {
     private static List<List<Integer>> sortIndexes(Collection<List<Integer>> indexes) {
         return new ArrayList<>(
                 indexes.stream()
-                .sorted((list1, list2) -> {
-                    int result = list2.size() - list1.size();
-                    if (result != 0) return result;
-                    for (int i = 0; i < list1.size(); i++) {
-                        int newResult = list1.get(i) - list2.get(i);
-                        if (newResult != 0) return newResult;
-                    }
-                    return result;
-                }) // sorting lists by their sizes from most to least, and their content from least to most
-                .toList()
+                        .sorted((list1, list2) -> {
+                            int result = list2.size() - list1.size();
+                            if (result != 0) return result;
+                            for (int i = 0; i < list1.size(); i++) {
+                                int newResult = list1.get(i) - list2.get(i);
+                                if (newResult != 0) return newResult;
+                            }
+                            return result;
+                        }) // sorting lists by their sizes from most to least, and their content from least to most
+                        .toList()
         );
     }
 
@@ -178,6 +178,18 @@ public class Grouper {
     }
 
     private static List<HeadGroup.PairGroup> groupList(List<HeadGroup.PairGroup> groups) {
+        List<HeadGroup.PairGroup> grouped = groupListBasic(groups);
+        for (HeadGroup.PairGroup group : grouped) {
+            if (group.getHead() instanceof HeadGroup.HeadPairListGroup listGroup) {
+                List<HeadGroup.PairGroup> heads = List.copyOf(listGroup.getHeads());
+                listGroup.getHeads().clear();
+                listGroup.getHeads().addAll(groupList(heads));
+            }
+        }
+        return grouped;
+    }
+
+    private static List<HeadGroup.PairGroup> groupListBasic(List<HeadGroup.PairGroup> groups) {
         if (groups.isEmpty()) return new ArrayList<>();
 
         int i = 0;
@@ -201,11 +213,25 @@ public class Grouper {
         if (similarPart.isEmpty()) return List.of(group1, group2);
         group1.extract(similarPart); // extracting duplicated info
         group2.extract(similarPart);
-        HeadGroup.PairGroup pair = new HeadGroup.PairGroup(
-                new HeadGroup.HeadPairListGroup(List.of(group1, group2)),
-                similarPart
-        );
-        return List.of(pair);
+
+        HeadGroup.HeadPairListGroup headsListGroup = new HeadGroup.HeadPairListGroup(new ArrayList<>());
+
+        if (group1.getTail().isEmpty() && group1.getHead() instanceof HeadGroup.HeadPairListGroup listGroup1) {
+            headsListGroup.getHeads().addAll(listGroup1.getHeads());
+        } else {
+            headsListGroup.getHeads().add(group1);
+        }
+
+        if (group2.getTail().isEmpty() && group2.getHead() instanceof HeadGroup.HeadPairListGroup listGroup2) {
+            headsListGroup.getHeads().addAll(listGroup2.getHeads());
+        } else {
+            headsListGroup.getHeads().add(group2);
+        }
+
+        return List.of(new HeadGroup.PairGroup(
+                        headsListGroup,
+                        similarPart
+        ));
     }
 
     private static InfoGroup.All getSimilar(HeadGroup.PairGroup group1, HeadGroup.PairGroup group2) {

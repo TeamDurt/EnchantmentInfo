@@ -49,7 +49,7 @@ public class TooltipHelper {
         ParentTooltip parent = new ParentTooltip().setGap(2);
 
         ClientTooltipComponent headTooltip = pairGroup.getHead().toTooltip();
-        if (!pairGroup.getTail().isEmpty() && pairGroup.getHead().shouldBeHighlightedInTooltip()) {
+        if (pairGroup.getHead().shouldBeHighlightedInTooltip()) {
             if (headTooltip != null) {
                 BlueLineTooltip blueLine = new BlueLineTooltip(headTooltip.getHeight());
                 headTooltip = new LineGroupTooltip(blueLine, headTooltip); // under blue line
