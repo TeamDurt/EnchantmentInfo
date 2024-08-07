@@ -9,7 +9,7 @@ public class CommonClass {
 
     public static void initMain() {
         if (Services.PLATFORM.isModLoaded(Constants.MOD_ID)) {
-            Constants.LOG.info("Hello to enchantmentinfo");
+            Constants.LOG.info("hi world!");
         }
     }
 
@@ -20,7 +20,7 @@ public class CommonClass {
         EnchantmentDataManager.getInstance().populateIncompatibleEnchantments();
         EnchantmentDataManager.getInstance().populateEnchantmentCategories();
 
-        Constants.LOG.info("EnchantmentInfo initial initialization took " + ((int) System.currentTimeMillis() - startTime) + "ms");
+        Constants.LOG.info("EnchantmentInfo initialization took " + ((int) System.currentTimeMillis() - startTime) + "ms");
     }
 
     public static void initTagDependent() {
