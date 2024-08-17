@@ -1,6 +1,6 @@
 modLoader = "javafml" #mandatory
 loaderVersion = "${forge_loader_version_range}" #mandatory
-license = "${mod_license}"
+license = "${mod_license_link}/${mod_license_version}"
 issueTrackerURL="${mod_issue_tracker}" #optional
 clientSideOnly=true #optional
 [[mods]] #mandatory
