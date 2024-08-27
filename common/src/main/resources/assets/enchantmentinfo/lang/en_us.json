@@ -1,6 +1,7 @@
 {
   "enchantmentinfo.holdShift": "Hold [%1$s] for more info",
   "enchantmentinfo.releaseShift": "Release [%1$s] to hide info",
+  "enchantmentinfo.key.shift": "Shift",
 
   "enchantmentinfo.crash1": "Something went wrong on getting Enchantment Info.",
   "enchantmentinfo.crash2": "Make sure you have latest version of Enchantment Info.",

@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 public class TooltipHelper {
     private static final Component shiftKeyComponent = Component
-            .literal("Shift")
+            .translatable("enchantmentinfo.key.shift")
             .withStyle(ChatFormatting.GRAY);
     private static final Component releaseShiftComponent = Component
             .translatable(
