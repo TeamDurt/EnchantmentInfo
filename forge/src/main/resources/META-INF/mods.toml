@@ -1,18 +1,18 @@
 modLoader = "javafml" #mandatory
 loaderVersion = "${forge_loader_version_range}" #mandatory
-license = "${license}"
-#issueTrackerURL="" #optional
+license = "${mod_license_link}/${mod_license_version}"
+issueTrackerURL="${mod_issue_tracker}" #optional
 clientSideOnly=true #optional
 [[mods]] #mandatory
 modId = "${mod_id}" #mandatory
 version = "${version}" #mandatory
 displayName = "${mod_name}" #mandatory
-#updateJSONURL="https://change.me.example.invalid/updates.json" #optional (see https://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/)
-#displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional (displayed in the mod UI)
+#updateJSONURL="https://change.me.example.invalid/updates.json" #optional
+#displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
 logoFile = "${mod_id}.png" #optional
-credits = "${credits}" #optional
+credits = "${mod_credits}" #optional
 authors = "${mod_author}" #optional
-description = '''${description}''' #mandatory (Supports multiline text)
+description = '''${mod_description}''' #mandatory (Supports multiline text)
 [[dependencies.${mod_id}]] #optional
 modId = "forge" #mandatory
 mandatory = true #mandatory

@@ -3,17 +3,35 @@
     "id": "${mod_id}",
     "version": "${version}",
     "name": "${mod_name}",
-    "description": "${description}",
+    "description": "${mod_description}",
     "authors": [
         "${mod_author}"
     ],
-    "contact": {},
-    "license": "${license}",
+    "contributors": [
+        "ListerK",
+        "HiWord9",
+        "Eltarchik"
+    ],
+    "contact": {
+        "sources": "${mod_sources}",
+        "issues": "${mod_issue_tracker}"
+    },
+    "custom": {
+        "modmenu": {
+            "links": {
+                "License": "${mod_license_link}/${mod_license_version}"
+            }
+        }
+    },
+    "license": "${mod_license} ${mod_license_version}",
     "icon": "${mod_id}.png",
     "environment": "*",
     "entrypoints": {
         "main": [
-            "com.teamdurt.enchantmentinfo.EnchantmentInfo"
+            "team.durt.enchantmentinfo.EnchantmentInfo"
+        ],
+        "client": [
+            "team.durt.enchantmentinfo.EnchantmentInfoClient"
         ]
     },
     "mixins": [

@@ -1,0 +1,10 @@
+{
+  "enchantmentinfo.holdShift": "Hold [%1$s] for more info",
+  "enchantmentinfo.releaseShift": "Release [%1$s] to hide info",
+
+  "enchantmentinfo.crash1": "Something went wrong on getting Enchantment Info.",
+  "enchantmentinfo.crash2": "Make sure you have latest version of Enchantment Info.",
+  "enchantmentinfo.crash3": "If so, please create an issue on github page",
+  "enchantmentinfo.crash4": "with log file located in path:",
+  "enchantmentinfo.crash5": "\".minecraft/logs/latest.log\""
+}
