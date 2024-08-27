@@ -6,7 +6,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import org.apache.commons.compress.utils.Lists;
@@ -23,10 +22,11 @@ public class TooltipBuilder {
      * Takes List of Components and adds {@link net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent Tooltips} to it
      * that are represents information about Enchantments in given {@link ListTag}
      *
+     * @return true if added custom tooltips, false otherwise
      * @see team.durt.enchantmentinfo.mixin.EnchantedBookItemMixin
      * @see FakeComponent
      */
-    public static void build(List<Component> components, ListTag enchantmentTags) {
+    public static boolean build(List<Component> components, ListTag enchantmentTags) {
         boolean shiftPressed = Screen.hasShiftDown();
 
         if (shiftPressed) {
@@ -40,12 +40,10 @@ public class TooltipBuilder {
                 onException(components, enchantmentTags, e);
             }
         } else {
-            // default enchantment names
-            ItemStack.appendEnchantmentNames(components, enchantmentTags);
+            return false;
         }
 
-        // hold or release shift message
-        TooltipHelper.addShiftMessage(components, !shiftPressed);
+        return true;
     }
 
     private static void addCustomTooltips(List<Component> components, ListTag enchantmentTags) {

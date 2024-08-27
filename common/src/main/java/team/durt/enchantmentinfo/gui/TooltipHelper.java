@@ -1,6 +1,7 @@
 package team.durt.enchantmentinfo.gui;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
@@ -180,6 +181,11 @@ public class TooltipHelper {
                 .map(InfoHolder::toTooltip)
                 .forEach(parent::addChild);
         return parent.getChildList().isEmpty() ? null : parent;
+    }
+
+    public static void addShiftMessage(List<Component> components) {
+        boolean shiftPressed = Screen.hasShiftDown();
+        addShiftMessage(components, !shiftPressed);
     }
 
     public static void addShiftMessage(List<Component> components, boolean shouldHold) {
