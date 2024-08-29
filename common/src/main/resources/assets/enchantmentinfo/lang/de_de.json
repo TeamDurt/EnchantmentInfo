@@ -1,4 +1,6 @@
 {
-  "enchantmentinfo.holdShift": "Halten Sie [%1$s] für mehr Informationen",
-  "enchantmentinfo.releaseShift": "Lassen Sie [%1$s] los, um die Informationen zu verbergen"
+  "enchantmentinfo.holdShift": "Halten Sie [%1$s]",
+  "enchantmentinfo.holdShift.1": "für mehr Informationen",
+  "enchantmentinfo.releaseShift": "Lassen Sie [%1$s] los, um die",
+  "enchantmentinfo.releaseShift.1": "Informationen zu verbergen"
 }
