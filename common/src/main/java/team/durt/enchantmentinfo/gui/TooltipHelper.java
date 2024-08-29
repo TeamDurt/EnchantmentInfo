@@ -20,6 +20,7 @@ import team.durt.enchantmentinfo.gui.tooltip.line.GreenLineTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.line.RedLineTooltip;
 import team.durt.enchantmentinfo.gui.tooltip.texture.EnchantmentCategoryTooltip;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,16 +28,6 @@ public class TooltipHelper {
     private static final Component shiftKeyComponent = Component
             .translatable("enchantmentinfo.key.shift")
             .withStyle(ChatFormatting.GRAY);
-    private static final Component releaseShiftComponent = Component
-            .translatable(
-                    "enchantmentinfo.releaseShift",
-                    shiftKeyComponent
-            ).withStyle(ChatFormatting.DARK_GRAY);
-    private static final Component holdShiftComponent = Component
-            .translatable(
-                    "enchantmentinfo.holdShift",
-                    shiftKeyComponent
-            ).withStyle(ChatFormatting.DARK_GRAY);
 
     public static ParentTooltip infoToTooltip(List<HeadGroup.PairGroup> pairGroups) {
         return new ParentTooltip(
@@ -197,10 +188,34 @@ public class TooltipHelper {
     }
 
     private static void addHoldShiftMessage(List<Component> components) {
-        components.add(holdShiftComponent);
+        components.addAll(getHoldShiftLines());
     }
 
     private static void addReleaseShiftMessage(List<Component> components) {
-        components.add(releaseShiftComponent);
+        components.addAll(getReleaseShiftLines());
+    }
+
+    private static List<Component> getHoldShiftLines() {
+        return multiLinedShiftMessage("enchantmentinfo.holdShift");
+    }
+
+    private static List<Component> getReleaseShiftLines() {
+        return multiLinedShiftMessage("enchantmentinfo.releaseShift");
+    }
+
+    private static List<Component> multiLinedShiftMessage(String messageKey) {
+        List<Component> components = new ArrayList<>();
+        Component lastTranslated;
+        int i = 0;
+        while (true) {
+            lastTranslated = Component
+                    .translatable(messageKey + (i == 0 ? "" : ("." + i)), shiftKeyComponent)
+                    .withStyle(ChatFormatting.DARK_GRAY);
+            if (lastTranslated.getString().equals(messageKey + "." + i++)) {
+                break;
+            }
+            components.add(lastTranslated);
+        }
+        return components;
     }
 }

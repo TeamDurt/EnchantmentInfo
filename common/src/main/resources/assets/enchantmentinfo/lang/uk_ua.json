@@ -1,4 +1,6 @@
 {
-  "enchantmentinfo.holdShift": "Утримуйте [%1$s] для отримання додаткової інформації",
-  "enchantmentinfo.releaseShift": "Відпустіть [%1$s], щоб приховати інформацію"
+  "enchantmentinfo.holdShift": "Утримуйте [%1$s] для отримання",
+  "enchantmentinfo.holdShift.1": "додаткової інформації",
+  "enchantmentinfo.releaseShift": "Відпустіть [%1$s], щоб",
+  "enchantmentinfo.releaseShift.1": "приховати інформацію"
 }
