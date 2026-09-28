@@ -19,7 +19,7 @@ public class CommonClass {
     }
 
     /**
-     * Enchantments are data driven and depend on item tags, so all the data is collected
+     * Enchantments are data driven and depend on item tags, so all the data is reset
      * every time client receives registries and tags from server.
      *
      * @see team.durt.enchantmentinfo.mixin.TagCollectorMixin
@@ -27,9 +27,7 @@ public class CommonClass {
     public static void initTagDependent(RegistryAccess registryAccess) {
         int startTime = (int) System.currentTimeMillis();
         EnchantmentsCompatibilityManager.getInstance().populateCompatibilities(registryAccess);
-        EnchantmentDataManager.getInstance().populateIncompatibleEnchantments(registryAccess);
-        EnchantmentDataManager.getInstance().populateEnchantmentCategories(registryAccess);
-        EnchantmentDataManager.getInstance().populateItemGroups(registryAccess);
+        EnchantmentDataManager.getInstance().reload(registryAccess);
 
         Constants.LOG.info("EnchantmentInfo initialization took " + ((int) System.currentTimeMillis() - startTime) + "ms");
     }
