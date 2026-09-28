@@ -7,8 +7,6 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 @Mod(Constants.MOD_ID)
 public class EnchantmentInfo {
     public EnchantmentInfo(IEventBus eventBus) {
-        CommonClass.initMain();
-
         eventBus.addListener(this::clientSetup);
     }
 

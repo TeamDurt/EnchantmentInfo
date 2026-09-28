@@ -11,8 +11,6 @@ public class EnchantmentInfo {
     public EnchantmentInfo(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
 
-        CommonClass.initMain();
-
         modEventBus.addListener(this::clientSetup);
     }
 

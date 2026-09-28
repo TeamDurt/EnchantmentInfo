@@ -25,11 +25,8 @@
     },
     "license": "${mod_license} ${mod_license_version}",
     "icon": "${mod_id}.png",
-    "environment": "*",
+    "environment": "client",
     "entrypoints": {
-        "main": [
-            "team.durt.enchantmentinfo.EnchantmentInfo"
-        ],
         "client": [
             "team.durt.enchantmentinfo.EnchantmentInfoClient"
         ]
