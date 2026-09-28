@@ -40,3 +40,10 @@ neoForge {
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+// Refmap is used only on Fabric, here Minecraft runs on official mappings
+processResources {
+    filesMatching("${mod_id}.mixins.json") {
+        filter { line -> line.contains('"refmap"') ? null : line }
+    }
+}
