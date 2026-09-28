@@ -18,10 +18,10 @@ public class CommonClass {
      * @see team.durt.enchantmentinfo.mixin.TagCollectorMixin
      */
     public static void initTagDependent(RegistryAccess registryAccess) {
-        int startTime = (int) System.currentTimeMillis();
+        long startTime = System.currentTimeMillis();
         EnchantmentsCompatibilityManager.getInstance().populateCompatibilities(registryAccess);
         EnchantmentDataManager.getInstance().reload(registryAccess);
 
-        Constants.LOG.info("EnchantmentInfo initialization took " + ((int) System.currentTimeMillis() - startTime) + "ms");
+        Constants.LOG.info("EnchantmentInfo initialization took " + (System.currentTimeMillis() - startTime) + "ms");
     }
 }
