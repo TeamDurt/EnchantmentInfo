@@ -4,7 +4,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
-import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -23,7 +22,7 @@ public class SwitcherTooltip implements ClientTooltipComponent, Parent<ClientToo
     }
 
     public SwitcherTooltip(int intervalMillis) {
-        this(Lists.newArrayList(), intervalMillis);
+        this(new ArrayList<>(), intervalMillis);
     }
 
     public SwitcherTooltip(List<? extends ClientTooltipComponent> tooltips) {

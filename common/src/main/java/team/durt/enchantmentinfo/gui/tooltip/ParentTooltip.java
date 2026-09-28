@@ -4,7 +4,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
-import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -30,7 +29,7 @@ public class ParentTooltip implements ClientTooltipComponent, Parent<ClientToolt
     }
 
     public ParentTooltip(Orientation orientation, int gap) {
-        this(Lists.newArrayList(), orientation, gap);
+        this(new ArrayList<>(), orientation, gap);
     }
 
     public ParentTooltip(List<? extends ClientTooltipComponent> childTooltips) {

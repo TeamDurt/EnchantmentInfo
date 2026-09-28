@@ -12,12 +12,12 @@ import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
-import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.Nullable;
 import team.durt.enchantmentinfo.Constants;
 import team.durt.enchantmentinfo.gui.group.HeadGroup.PairGroup;
 import team.durt.enchantmentinfo.gui.tooltip.ParentTooltip;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -72,7 +72,7 @@ public class TooltipBuilder {
      */
     private static List<EnchantmentInstance> getEnchantments(ItemEnchantments itemEnchantments, @Nullable HolderLookup.Provider registries) {
         HolderSet<Enchantment> tooltipOrder = getTooltipOrder(registries);
-        List<EnchantmentInstance> enchantments = Lists.newArrayList();
+        List<EnchantmentInstance> enchantments = new ArrayList<>();
         for (Holder<Enchantment> enchantment : tooltipOrder) {
             int level = itemEnchantments.getLevel(enchantment);
             if (level > 0) {
