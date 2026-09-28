@@ -1,10 +1,6 @@
 package team.durt.enchantmentinfo.api.category;
 
-import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.HoeItem;
-import net.minecraft.world.item.PickaxeItem;
-import net.minecraft.world.item.ShovelItem;
-import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.tags.ItemTags;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -39,21 +35,21 @@ public class ModEnchantmentCategoryManager {
 
     public void populateCategories() {
         /* Vanilla categories */
-        addCategory(new ModEnchantmentCategory("armor_feet", EnchantmentCategory.ARMOR_FEET::canEnchant));
-        addCategory(new ModEnchantmentCategory("armor_legs", EnchantmentCategory.ARMOR_LEGS::canEnchant));
-        addCategory(new ModEnchantmentCategory("armor_chest", EnchantmentCategory.ARMOR_CHEST::canEnchant));
-        addCategory(new ModEnchantmentCategory("armor_head", EnchantmentCategory.ARMOR_HEAD::canEnchant));
-        addCategory(new ModEnchantmentCategory("weapon", EnchantmentCategory.WEAPON::canEnchant));
-        addCategory(new ModEnchantmentCategory("fishing_rod", EnchantmentCategory.FISHING_ROD::canEnchant));
-        addCategory(new ModEnchantmentCategory("trident", EnchantmentCategory.TRIDENT::canEnchant));
-        addCategory(new ModEnchantmentCategory("breakable", EnchantmentCategory.BREAKABLE::canEnchant));
-        addCategory(new ModEnchantmentCategory("bow", EnchantmentCategory.BOW::canEnchant));
-        addCategory(new ModEnchantmentCategory("crossbow", EnchantmentCategory.CROSSBOW::canEnchant));
+        addCategory(new ModEnchantmentCategory("armor_feet", ItemTags.FOOT_ARMOR_ENCHANTABLE));
+        addCategory(new ModEnchantmentCategory("armor_legs", ItemTags.LEG_ARMOR_ENCHANTABLE));
+        addCategory(new ModEnchantmentCategory("armor_chest", ItemTags.CHEST_ARMOR_ENCHANTABLE));
+        addCategory(new ModEnchantmentCategory("armor_head", ItemTags.HEAD_ARMOR_ENCHANTABLE));
+        addCategory(new ModEnchantmentCategory("weapon", ItemTags.SWORD_ENCHANTABLE));
+        addCategory(new ModEnchantmentCategory("fishing_rod", ItemTags.FISHING_ENCHANTABLE));
+        addCategory(new ModEnchantmentCategory("trident", ItemTags.TRIDENT_ENCHANTABLE));
+        addCategory(new ModEnchantmentCategory("breakable", ItemTags.DURABILITY_ENCHANTABLE));
+        addCategory(new ModEnchantmentCategory("bow", ItemTags.BOW_ENCHANTABLE));
+        addCategory(new ModEnchantmentCategory("crossbow", ItemTags.CROSSBOW_ENCHANTABLE));
 
         /* Custom categories */
-        addCategory(new ModEnchantmentCategory("pickaxe", item -> item instanceof PickaxeItem));
-        addCategory(new ModEnchantmentCategory("axe", item -> item instanceof AxeItem));
-        addCategory(new ModEnchantmentCategory("shovel", item -> item instanceof ShovelItem));
-        addCategory(new ModEnchantmentCategory("hoe", item -> item instanceof HoeItem));
+        addCategory(new ModEnchantmentCategory("pickaxe", ItemTags.PICKAXES));
+        addCategory(new ModEnchantmentCategory("axe", ItemTags.AXES));
+        addCategory(new ModEnchantmentCategory("shovel", ItemTags.SHOVELS));
+        addCategory(new ModEnchantmentCategory("hoe", ItemTags.HOES));
     }
 }

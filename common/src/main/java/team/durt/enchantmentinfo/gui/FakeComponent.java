@@ -1,21 +1,23 @@
 package team.durt.enchantmentinfo.gui;
 
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.FormattedCharSink;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Used to store {@link ClientTooltipComponent Tooltip Components} meanwhile being able to be added to List of {@link Component Components}
  *
- * @see TooltipBuilder#build(List, ListTag)
+ * @see TooltipBuilder#build(Consumer, ItemEnchantments, HolderLookup.Provider)
  * @see team.durt.enchantmentinfo.mixin.GuiGraphicsMixin#parseTooltips(List)
  */
 public class FakeComponent implements Component {

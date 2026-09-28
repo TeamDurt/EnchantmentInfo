@@ -1,9 +1,12 @@
 package team.durt.enchantmentinfo.api.compatibility;
 
-import team.durt.enchantmentinfo.platform.Services;
+import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.enchantment.Enchantment;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -20,28 +23,30 @@ public class EnchantmentsCompatibilityManager {
         return instance;
     }
 
-    public void addCompatibility(Enchantment enchantment1, Enchantment enchantment2, boolean compatible) {
+    public void addCompatibility(Holder<Enchantment> enchantment1, Holder<Enchantment> enchantment2, boolean compatible) {
         compatibilityMap.put(new EnchantmentPair(enchantment1, enchantment2), compatible);
     }
 
-    public boolean isCompatible(Enchantment enchantment1, Enchantment enchantment2) {
+    public boolean isCompatible(Holder<Enchantment> enchantment1, Holder<Enchantment> enchantment2) {
         return compatibilityMap.getOrDefault(new EnchantmentPair(enchantment1, enchantment2), false);
     }
 
-    public void populateCompatibilities() {
-        Services.REGISTRY.getRegisteredEnchantments().forEach(enchantment1 ->
-                Services.REGISTRY.getRegisteredEnchantments().forEach(enchantment2 -> {
+    public void populateCompatibilities(RegistryAccess registryAccess) {
+        compatibilityMap.clear();
+        List<Holder.Reference<Enchantment>> enchantments = registryAccess.registryOrThrow(Registries.ENCHANTMENT).holders().toList();
+        enchantments.forEach(enchantment1 ->
+                enchantments.forEach(enchantment2 -> {
                     if (!enchantment1.equals(enchantment2)) {
-                        addCompatibility(enchantment1, enchantment2, enchantment1.isCompatibleWith(enchantment2));
+                        addCompatibility(enchantment1, enchantment2, Enchantment.areCompatible(enchantment1, enchantment2));
                     }
                 }));
     }
 
     private static class EnchantmentPair {
-        private final Enchantment enchantment1;
-        private final Enchantment enchantment2;
+        private final Holder<Enchantment> enchantment1;
+        private final Holder<Enchantment> enchantment2;
 
-        public EnchantmentPair(Enchantment enchantment1, Enchantment enchantment2) {
+        public EnchantmentPair(Holder<Enchantment> enchantment1, Holder<Enchantment> enchantment2) {
             if (enchantment1.hashCode() > enchantment2.hashCode() ||
                     (enchantment1.hashCode() == enchantment2.hashCode() && enchantment1.toString().compareTo(enchantment2.toString()) > 0)) {
                 this.enchantment1 = enchantment2;

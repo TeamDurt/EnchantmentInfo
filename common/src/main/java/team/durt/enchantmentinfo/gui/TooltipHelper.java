@@ -22,6 +22,7 @@ import team.durt.enchantmentinfo.gui.tooltip.texture.EnchantmentCategoryTooltip;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class TooltipHelper {
@@ -174,25 +175,25 @@ public class TooltipHelper {
         return parent.getChildList().isEmpty() ? null : parent;
     }
 
-    public static void addShiftMessage(List<Component> components) {
+    public static void addShiftMessage(Consumer<Component> tooltipAdder) {
         boolean shiftPressed = Screen.hasShiftDown();
-        addShiftMessage(components, !shiftPressed);
+        addShiftMessage(tooltipAdder, !shiftPressed);
     }
 
-    public static void addShiftMessage(List<Component> components, boolean shouldHold) {
+    public static void addShiftMessage(Consumer<Component> tooltipAdder, boolean shouldHold) {
         if (shouldHold) {
-            addHoldShiftMessage(components);
+            addHoldShiftMessage(tooltipAdder);
         } else {
-            addReleaseShiftMessage(components);
+            addReleaseShiftMessage(tooltipAdder);
         }
     }
 
-    private static void addHoldShiftMessage(List<Component> components) {
-        components.addAll(getHoldShiftLines());
+    private static void addHoldShiftMessage(Consumer<Component> tooltipAdder) {
+        getHoldShiftLines().forEach(tooltipAdder);
     }
 
-    private static void addReleaseShiftMessage(List<Component> components) {
-        components.addAll(getReleaseShiftLines());
+    private static void addReleaseShiftMessage(Consumer<Component> tooltipAdder) {
+        getReleaseShiftLines().forEach(tooltipAdder);
     }
 
     private static List<Component> getHoldShiftLines() {

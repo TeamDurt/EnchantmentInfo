@@ -1,5 +1,6 @@
 package team.durt.enchantmentinfo.gui;
 
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
@@ -85,7 +86,7 @@ public class InfoCollector {
     private static InfoGroup.IncompatibleEnchantments parseIncompatibleEnchantments(
             EnchantmentInstance enchantmentInstance
     ) {
-        List<Enchantment> incompatibleEnchantments = new ArrayList<>(
+        List<Holder<Enchantment>> incompatibleEnchantments = new ArrayList<>(
                 enchantmentDataManager.getIncompatibleEnchantments(enchantmentInstance.enchantment)
         );
 
@@ -98,7 +99,7 @@ public class InfoCollector {
     }
 
     private static InfoGroup.Enchantables parseEnchantableItems(EnchantmentInstance enchantmentInstance) {
-        Enchantment enchantment = enchantmentInstance.enchantment;
+        Holder<Enchantment> enchantment = enchantmentInstance.enchantment;
 
         List<ModEnchantmentCategory> categories = new ArrayList<>(enchantmentDataManager.getEnchantmentCategories(enchantment));
         List<List<Item>> included = enchantmentDataManager.getIncludedItemGroups(enchantment)

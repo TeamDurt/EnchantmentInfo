@@ -7,9 +7,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(Constants.MOD_ID)
 public class EnchantmentInfo {
-    
-    public EnchantmentInfo() {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+    public EnchantmentInfo(FMLJavaModLoadingContext context) {
+        IEventBus modEventBus = context.getModEventBus();
 
         CommonClass.initMain();
 

@@ -107,7 +107,7 @@ public class ColorManager {
     }
 
     private static ResourceLocation colorPropertiesResourceLocation(String colorName) {
-        return new ResourceLocation(Constants.MOD_ID, "textures/tooltip/colors/" + colorName + ".properties");
+        return ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/tooltip/colors/" + colorName + ".properties");
     }
 
     private static int rainbowColor() {

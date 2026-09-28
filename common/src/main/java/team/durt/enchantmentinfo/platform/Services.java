@@ -2,13 +2,11 @@ package team.durt.enchantmentinfo.platform;
 
 import team.durt.enchantmentinfo.Constants;
 import team.durt.enchantmentinfo.platform.services.IPlatformHelper;
-import team.durt.enchantmentinfo.platform.services.IRegistryHelper;
 
 import java.util.ServiceLoader;
 
 public class Services {
     public static final IPlatformHelper PLATFORM = load(IPlatformHelper.class);
-    public static final IRegistryHelper REGISTRY = load(IRegistryHelper.class);
 
     public static <T> T load(Class<T> clazz) {
 

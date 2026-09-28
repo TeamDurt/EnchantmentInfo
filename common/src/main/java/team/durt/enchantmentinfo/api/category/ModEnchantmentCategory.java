@@ -1,7 +1,9 @@
 package team.durt.enchantmentinfo.api.category;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -15,6 +17,10 @@ public class ModEnchantmentCategory {
         this.canEnchant = canEnchant;
     }
 
+    public ModEnchantmentCategory(String name, TagKey<Item> tag) {
+        this(name, item -> new ItemStack(item).is(tag));
+    }
+
     public String getName() {
         return name;
     }
@@ -24,7 +30,7 @@ public class ModEnchantmentCategory {
     }
 
     public ResourceLocation getTexture() {
-        return new ResourceLocation("enchantmentinfo", "textures/tooltip/category/" + this.getName() + ".png");
+        return ResourceLocation.fromNamespaceAndPath("enchantmentinfo", "textures/tooltip/category/" + this.getName() + ".png");
     }
 
     @Override

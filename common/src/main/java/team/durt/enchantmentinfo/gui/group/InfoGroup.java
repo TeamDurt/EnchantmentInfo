@@ -1,5 +1,6 @@
 package team.durt.enchantmentinfo.gui.group;
 
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import team.durt.enchantmentinfo.api.category.ModEnchantmentCategory;
@@ -156,14 +157,14 @@ public abstract class InfoGroup<T> implements Parent<T>, InfoHolder {
         }
     }
 
-    public static class IncompatibleEnchantments extends InfoGroup<Enchantment> {
+    public static class IncompatibleEnchantments extends InfoGroup<Holder<Enchantment>> {
         @Override
         public LineGroupTooltip toTooltip() {
             return TooltipHelper.parseIncompatibleEnchantments(this);
         }
 
         @Override
-        public IncompatibleEnchantments getSimilar(InfoGroup<Enchantment> info) {
+        public IncompatibleEnchantments getSimilar(InfoGroup<Holder<Enchantment>> info) {
             return (IncompatibleEnchantments) new IncompatibleEnchantments().setChildList(this.getSimilarContent(info.getChildList()));
         }
     }
