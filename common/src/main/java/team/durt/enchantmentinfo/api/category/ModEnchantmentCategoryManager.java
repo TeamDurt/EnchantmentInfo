@@ -2,12 +2,13 @@ package team.durt.enchantmentinfo.api.category;
 
 import net.minecraft.tags.ItemTags;
 
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class ModEnchantmentCategoryManager {
     private static ModEnchantmentCategoryManager instance;
-    private final Set<ModEnchantmentCategory> categories = new HashSet<>();
+    private final Set<ModEnchantmentCategory> categories = new LinkedHashSet<>();
 
     private ModEnchantmentCategoryManager() {}
 
@@ -23,7 +24,7 @@ public class ModEnchantmentCategoryManager {
     }
 
     public Set<ModEnchantmentCategory> getCategories() {
-        return Set.copyOf(categories);
+        return Collections.unmodifiableSet(new LinkedHashSet<>(categories));
     }
 
     public ModEnchantmentCategory getCategory(String name) {
@@ -35,10 +36,10 @@ public class ModEnchantmentCategoryManager {
 
     public void populateCategories() {
         /* Vanilla categories */
-        addCategory(new ModEnchantmentCategory("armor_feet", ItemTags.FOOT_ARMOR_ENCHANTABLE));
-        addCategory(new ModEnchantmentCategory("armor_legs", ItemTags.LEG_ARMOR_ENCHANTABLE));
-        addCategory(new ModEnchantmentCategory("armor_chest", ItemTags.CHEST_ARMOR_ENCHANTABLE));
         addCategory(new ModEnchantmentCategory("armor_head", ItemTags.HEAD_ARMOR_ENCHANTABLE));
+        addCategory(new ModEnchantmentCategory("armor_chest", ItemTags.CHEST_ARMOR_ENCHANTABLE));
+        addCategory(new ModEnchantmentCategory("armor_legs", ItemTags.LEG_ARMOR_ENCHANTABLE));
+        addCategory(new ModEnchantmentCategory("armor_feet", ItemTags.FOOT_ARMOR_ENCHANTABLE));
         addCategory(new ModEnchantmentCategory("weapon", ItemTags.SWORD_ENCHANTABLE));
         addCategory(new ModEnchantmentCategory("fishing_rod", ItemTags.FISHING_ENCHANTABLE));
         addCategory(new ModEnchantmentCategory("trident", ItemTags.TRIDENT_ENCHANTABLE));
