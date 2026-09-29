@@ -245,6 +245,20 @@ public abstract class InfoGroup<T> implements Parent<T>, InfoHolder {
             }
             return similarContent;
         }
+
+        /**
+         * Same as its super method, but fixed to remove Items from every {@link Items} group,
+         * since same Item may be in different groups, same as in {@link #getSimilarContent(List)}.
+         */
+        @Override
+        public <R> void extract(InfoGroup<Items> infoToExtract) {
+            for (Items their : infoToExtract.getChildList()) {
+                for (Items our : this.getChildList()) {
+                    our.extract(their);
+                }
+            }
+            this.getChildList().removeIf(InfoGroup::isEmpty);
+        }
     }
 
     public static class Items extends InfoGroup<Item> {
