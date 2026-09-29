@@ -10,12 +10,11 @@ base {
 
 mixin {
     config("${mod_id}.mixins.json")
-    config("${mod_id}.forge.mixins.json")
 }
 
 jar {
     manifest {
-        attributes["MixinConfigs"] = "${mod_id}.mixins.json,${mod_id}.forge.mixins.json"
+        attributes["MixinConfigs"] = "${mod_id}.mixins.json"
     }
 }
 
