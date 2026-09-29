@@ -177,7 +177,7 @@ public class Grouper {
 
         @Override
         public int hashCode() {
-            return link.hashCode();
+            return Objects.hash(link, info);
         }
     }
 
