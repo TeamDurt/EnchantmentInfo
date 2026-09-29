@@ -72,6 +72,10 @@ public class Grouper {
                 }
             }
         }
+        // groups without any info have no indexes, but still have to be shown
+        groups.stream()
+                .filter(group -> !sorted.contains(group))
+                .forEach(sorted::add);
         return sorted;
     }
 
