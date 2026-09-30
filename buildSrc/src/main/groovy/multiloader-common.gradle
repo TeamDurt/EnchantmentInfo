@@ -102,6 +102,7 @@ processResources {
             "mod_license"                     : mod_license,
             "mod_license_link"                : mod_license_link,
             "mod_license_version"             : mod_license_version,
+            "mod_homepage"                    : mod_homepage,
             "mod_issue_tracker"               : mod_issue_tracker,
             "mod_sources"                     : mod_sources,
             "mod_description"                 : project.mod_description,

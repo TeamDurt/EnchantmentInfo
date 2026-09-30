@@ -13,6 +13,7 @@
         "Eltarchik"
     ],
     "contact": {
+        "homepage": "${mod_homepage}",
         "sources": "${mod_sources}",
         "issues": "${mod_issue_tracker}"
     },
